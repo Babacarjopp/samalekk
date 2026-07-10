@@ -11,8 +11,8 @@ const StatCard = ({ emoji, valeur, label, couleur = 'bg-orange-50 text-orange-70
           <span>{tendance >= 0 ? '↑' : '↓'}</span>
           <span>{Math.abs(tendance)}% vs hier</span>
         </div>
-      )}
-    </div>
+      )}      
+    </div>        
   );
 };
 
