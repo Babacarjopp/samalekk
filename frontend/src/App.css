@@ -1,0 +1,32 @@
+/* App.css — styles spécifiques à l'application */
+/* La majorité des styles sont dans index.css via Tailwind */
+
+/* Fix Leaflet z-index dans les modals */
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 1 !important;
+}
+
+/* Transition de page */
+.page-transition {
+  animation: glisser-haut 0.3s ease-out;
+}
+
+/* Scrollbar dans les tableaux */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #E85D2F;
+  border-radius: 2px;
+}
+
+/* Line clamp pour les descriptions */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
