@@ -44,9 +44,9 @@ const Layout = ({ children, avecNavbar = true }) => (
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter>       
       <AuthProvider>
-        <PanierProvider>
+        <PanierProvider>       
           <Routes>
 
             {/* ── Pages publiques ── */}
