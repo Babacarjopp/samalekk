@@ -5,10 +5,10 @@ import Button from '../../components/common/Button';
 import Loader from '../../components/common/Loader';
 
 const rolesConfig = {
-  client:       { label: 'Client',       couleur: 'bg-blue-100 text-blue-700',    emoji: '👤' },
-  restaurateur: { label: 'Restaurateur', couleur: 'bg-orange-100 text-orange-700',emoji: '🍴' },
-  livreur:      { label: 'Livreur',      couleur: 'bg-purple-100 text-purple-700',emoji: '🛵' },
-  admin:        { label: 'Admin',        couleur: 'bg-red-100 text-red-700',      emoji: '🔧' },
+  client:       { label: 'Client',       couleur: 'bg-blue-100 text-blue-700',    icone: 'ti ti-user' },
+  restaurateur: { label: 'Restaurateur', couleur: 'bg-orange-100 text-orange-700',icone: 'ti ti-bowl-chopsticks' },
+  livreur:      { label: 'Livreur',      couleur: 'bg-purple-100 text-purple-700',icone: 'ti ti-truck-delivery' },
+  admin:        { label: 'Admin',        couleur: 'bg-red-100 text-red-700',      icone: 'ti ti-settings' },
 };
 
 const statutsConfig = {
@@ -85,7 +85,7 @@ const Utilisateurs = () => {
                             : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300'
                           }`}
             >
-              {role ? rolesConfig[role]?.emoji + ' ' + rolesConfig[role]?.label : 'Tous'}
+          {role ? <span className="inline-flex items-center gap-2"><i className={`${rolesConfig[role]?.icone} text-sm`} /> {rolesConfig[role]?.label}</span> : 'Tous'}
             </button>
           ))}
         </div>
@@ -128,8 +128,8 @@ const Utilisateurs = () => {
                         </div>
                       </td>
                       <td className="px-5 py-4">
-                        <span className={`badge-statut ${role.couleur}`}>
-                          {role.emoji} {role.label}
+                        <span className={`badge-statut ${role.couleur} inline-flex items-center gap-2`}>
+                          <i className={`${role.icone} text-sm`} /> {role.label}
                         </span>
                       </td>
                       <td className="px-5 py-4">

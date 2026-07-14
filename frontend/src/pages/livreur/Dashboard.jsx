@@ -83,9 +83,10 @@ const DashboardLivreur = () => {
                                ${disponible ? 'translate-x-7' : 'translate-x-0.5'}`}
               />
             </button>
-            <span className={`text-xs font-semibold
+            <span className={`text-xs font-semibold inline-flex items-center gap-2
                               ${disponible ? 'text-green-600' : 'text-gray-400'}`}>
-              {disponible ? '🟢 Disponible' : '⚫ Indisponible'}
+              <i className={disponible ? 'ti ti-circle-check' : 'ti ti-circle-x'} />
+              {disponible ? 'Disponible' : 'Indisponible'}
             </span>
           </div>
         </div>
@@ -102,7 +103,9 @@ const DashboardLivreur = () => {
 
         {!disponible ? (
           <div className="text-center py-12">
-            <div className="text-5xl mb-4">😴</div>
+            <div className="text-5xl mb-4">
+              <i className="ti ti-mood-sad" />
+            </div>
             <p className="text-gray-600 font-medium mb-2">
               Vous êtes indisponible
             </p>
@@ -112,7 +115,9 @@ const DashboardLivreur = () => {
           </div>
         ) : missions.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-5xl mb-4">🛵</div>
+            <div className="text-5xl mb-4">
+              <i className="ti ti-truck-delivery" />
+            </div>
             <p className="text-gray-600 font-medium mb-2">
               Aucune mission disponible
             </p>
@@ -131,25 +136,25 @@ const DashboardLivreur = () => {
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center
                                   justify-center text-xl shrink-0">
-                    🍴
+                    <i className="ti ti-restaurant" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-gray-900">
                       {mission.commande?.restaurant?.nom}
                     </p>
-                    <p className="text-gray-400 text-sm truncate">
-                      📍 {mission.commande?.restaurant?.adresse}
+                    <p className="text-gray-400 text-sm truncate flex items-center gap-2">
+                      <i className="ti ti-map-pin text-sm" /> {mission.commande?.restaurant?.adresse}
                     </p>
                   </div>
                   <div className="text-orange-600 text-lg font-bold shrink-0">
-                    🛵
+                    <i className="ti ti-truck-delivery" />
                   </div>
                 </div>
 
                 {/* Infos client */}
                 <div className="bg-orange-50 rounded-xl p-3 mb-4">
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="text-orange-600">👤</span>
+                    <i className="ti ti-user text-orange-600" />
                     <span className="font-medium text-gray-800">
                       {mission.commande?.client?.nom}
                     </span>
@@ -159,13 +164,12 @@ const DashboardLivreur = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm mt-2">
-                    <span className="text-orange-600">📍</span>
+                    <i className="ti ti-map-pin text-orange-600" />
                     <span className="text-gray-600">
                       {mission.commande?.adresseLivraison}
                     </span>
                   </div>
                 </div>
-
                 {/* Montant et temps */}
                 <div className="flex items-center justify-between mb-4">
                   <div>
@@ -182,8 +186,9 @@ const DashboardLivreur = () => {
                   </div>
                   <div className="text-right">
                     <span className="text-gray-400 text-xs">Paiement</span>
-                    <div className="text-gray-600 text-sm">
-                      {mission.commande?.modePaiement === 'en_ligne' ? '💳 En ligne' : '💵 Cash'}
+                    <div className="text-gray-600 text-sm flex items-center justify-end gap-2">
+                      <i className="ti ti-credit-card text-sm" />
+                      {mission.commande?.modePaiement === 'en_ligne' ? 'En ligne' : 'Cash'}
                     </div>
                   </div>
                 </div>
@@ -195,7 +200,7 @@ const DashboardLivreur = () => {
                   onClick={() => accepterMission(mission.id)}
                   className="w-full"
                 >
-                  🛵 Accepter cette mission
+                  <i className="ti ti-truck-delivery text-base" /> Accepter cette mission
                 </Button>
               </div>
             ))}

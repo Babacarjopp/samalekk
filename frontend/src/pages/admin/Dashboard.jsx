@@ -68,10 +68,10 @@ const DashboardAdmin = () => {
         </div>
         <div className="flex gap-3">
           <Link to="/admin/utilisateurs" className="btn-secondaire-light btn-sm text-sm">
-            👥 Utilisateurs
+            <i className="ti ti-users" /> Utilisateurs
           </Link>
           <Link to="/admin/statistiques" className="btn-primaire btn-sm text-sm">
-            📊 Statistiques
+            <i className="ti ti-chart-bar" /> Statistiques
           </Link>
         </div>
       </div>
@@ -79,13 +79,13 @@ const DashboardAdmin = () => {
       {/* Cartes KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Clients',        val: stats.utilisateurs?.clients || 0,       emoji: '👤', couleur: 'bg-blue-50 text-blue-700' },
-          { label: 'Restaurateurs',  val: stats.utilisateurs?.restaurateurs || 0, emoji: '🍴', couleur: 'bg-orange-50 text-orange-700' },
-          { label: 'Livreurs',       val: stats.utilisateurs?.livreurs || 0,      emoji: '🛵', couleur: 'bg-purple-50 text-purple-700' },
-          { label: 'Restaurants',    val: stats.restaurants?.valides || 0,        emoji: '🏪', couleur: 'bg-green-50 text-green-700' },
+          { label: 'Clients',        val: stats.utilisateurs?.clients || 0,       icone: 'ti ti-user', couleur: 'bg-blue-50 text-blue-700' },
+          { label: 'Restaurateurs',  val: stats.utilisateurs?.restaurateurs || 0, icone: 'ti ti-bowl-chopsticks', couleur: 'bg-orange-50 text-orange-700' },
+          { label: 'Livreurs',       val: stats.utilisateurs?.livreurs || 0,      icone: 'ti ti-truck-delivery', couleur: 'bg-purple-50 text-purple-700' },
+          { label: 'Restaurants',    val: stats.restaurants?.valides || 0,        icone: 'ti ti-store', couleur: 'bg-green-50 text-green-700' },
         ].map(kpi => (
           <div key={kpi.label} className={`carte p-5 ${kpi.couleur}`}>
-            <div className="text-3xl mb-2">{kpi.emoji}</div>
+            <div className="text-3xl mb-2"><i className={`${kpi.icone} text-3xl`} /></div>
             <div className="text-3xl font-bold">{kpi.val}</div>
             <div className="text-sm opacity-80 mt-1">{kpi.label}</div>
           </div>
@@ -95,12 +95,12 @@ const DashboardAdmin = () => {
       {/* KPIs commandes */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {[
-          { label: 'Commandes aujourd\'hui', val: stats.commandes?.aujourdhui || 0, emoji: '📦', couleur: 'bg-amber-50 text-amber-700' },
-          { label: 'Total commandes',        val: stats.commandes?.total || 0,      emoji: '📊', couleur: 'bg-gray-50 text-gray-700' },
-          { label: 'Revenu total',           val: formatPrix(stats.revenuTotal || 0), emoji: '💰', couleur: 'bg-emerald-50 text-emerald-700' },
+          { label: 'Commandes aujourd\'hui', val: stats.commandes?.aujourdhui || 0, icone: 'ti ti-package', couleur: 'bg-amber-50 text-amber-700' },
+          { label: 'Total commandes',        val: stats.commandes?.total || 0,      icone: 'ti ti-chart-bar', couleur: 'bg-gray-50 text-gray-700' },
+          { label: 'Revenu total',           val: formatPrix(stats.revenuTotal || 0), icone: 'ti ti-wallet', couleur: 'bg-emerald-50 text-emerald-700' },
         ].map(kpi => (
           <div key={kpi.label} className={`carte p-5 ${kpi.couleur}`}>
-            <div className="text-3xl mb-2">{kpi.emoji}</div>
+            <div className="text-3xl mb-2"><i className={`${kpi.icone} text-3xl`} /></div>
             <div className="text-2xl font-bold">{kpi.val}</div>
             <div className="text-sm opacity-80 mt-1">{kpi.label}</div>
           </div>
@@ -186,7 +186,7 @@ const RestaurantsEnAttente = ({ onValider, onRefuser, validation }) => {
         <Loader texte="Chargement..." />
       ) : restaurants.length === 0 ? (
         <div className="text-center py-8">
-          <div className="text-4xl mb-3">✅</div>
+          <div className="text-4xl mb-3"><i className="ti ti-check text-3xl" /></div>
           <p className="text-gray-400 text-sm">
             Aucun restaurant en attente
           </p>
@@ -200,8 +200,8 @@ const RestaurantsEnAttente = ({ onValider, onRefuser, validation }) => {
               <div className="mb-3">
                 <h3 className="font-bold text-gray-900">{resto.nom}</h3>
                 <p className="text-gray-500 text-sm">{resto.categorie} · {resto.adresse}</p>
-                <p className="text-gray-400 text-xs mt-1">
-                  👤 {resto.restaurateur?.nom} · 📞 {resto.restaurateur?.telephone}
+                <p className="text-gray-400 text-xs mt-1 flex items-center gap-2">
+                  <i className="ti ti-user text-sm" /> {resto.restaurateur?.nom} · <i className="ti ti-phone text-sm" /> {resto.restaurateur?.telephone}
                 </p>
               </div>
               <div className="flex gap-2">

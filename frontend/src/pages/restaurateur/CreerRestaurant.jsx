@@ -70,7 +70,7 @@ const CreerRestaurant = () => {
     return (
       <div className="max-w-xl mx-auto px-4 py-12">
         <div className="carte card-p text-center">
-          <div className="text-5xl mb-4">🍴</div>
+          <div className="text-5xl mb-4"><i className="ti ti-bowl-chopsticks" /></div>
           <h1 className="page-title mb-3">{restaurantExistant.nom}</h1>
           <p className="body-md mb-6">
             {restaurantExistant.statut === 'valide'

@@ -9,12 +9,12 @@ import Button from '../../components/common/Button';
 import SuiviLivraison from '../../components/client/SuiviLivraison';
 
 const statutsConfig = {
-  en_attente:     { label: 'En attente',     couleur: 'bg-yellow-100 text-yellow-700', emoji: '⏳' },
-  confirmee:      { label: 'Confirmée',      couleur: 'bg-blue-100 text-blue-700',    emoji: '✅' },
-  en_preparation: { label: 'En préparation', couleur: 'bg-orange-100 text-orange-700',emoji: '🍳' },
-  en_livraison:   { label: 'En livraison',   couleur: 'bg-purple-100 text-purple-700',emoji: '🛵' },
-  livree:         { label: 'Livrée',         couleur: 'bg-green-100 text-green-700',  emoji: '🎉' },
-  annulee:        { label: 'Annulée',        couleur: 'bg-red-100 text-red-700',      emoji: '❌' },
+  en_attente:     { label: 'En attente',     couleur: 'bg-yellow-100 text-yellow-700', icone: 'ti ti-clock' },
+  confirmee:      { label: 'Confirmée',      couleur: 'bg-blue-100 text-blue-700',    icone: 'ti ti-check' },
+  en_preparation: { label: 'En préparation', couleur: 'bg-orange-100 text-orange-700',icone: 'ti ti-flame' },
+  en_livraison:   { label: 'En livraison',   couleur: 'bg-purple-100 text-purple-700',icone: 'ti ti-truck-delivery' },
+  livree:         { label: 'Livrée',         couleur: 'bg-green-100 text-green-700',  icone: 'ti ti-flag' },
+  annulee:        { label: 'Annulée',        couleur: 'bg-red-100 text-red-700',      icone: 'ti ti-alert-circle' },
 };
 
 const Suivi = () => {
@@ -64,7 +64,9 @@ const Suivi = () => {
 
       {commandes.length === 0 ? (
         <div className="text-center py-20">
-          <div className="text-6xl mb-4">🛒</div>
+          <div className="text-6xl mb-4">
+            <i className="ti ti-shopping-cart" />
+          </div>
           <h3 className="text-xl font-bold text-gray-700 mb-2">
             Aucune commande pour l'instant
           </h3>
@@ -89,8 +91,8 @@ const Suivi = () => {
                       <h3 className="font-bold text-gray-900">
                         {commande.restaurant?.nom}
                       </h3>
-                      <span className={`badge-statut ${statut.couleur}`}>
-                        {statut.emoji} {statut.label}
+                      <span className={`badge-statut ${statut.couleur} inline-flex items-center gap-2`}>
+                        <i className={`${statut.icone} text-sm`} /> {statut.label}
                       </span>
                     </div>
                     <p className="text-gray-400 text-sm">
@@ -131,7 +133,9 @@ const Suivi = () => {
                   <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-4
                                   flex items-center justify-between gap-4">
                     <div className="text-sm text-yellow-800">
-                      <span className="font-semibold">⏳ Paiement en attente</span>
+                      <span className="font-semibold inline-flex items-center gap-2">
+                        <i className="ti ti-clock text-sm" /> Paiement en attente
+                      </span>
                       <p className="text-yellow-700 mt-0.5">
                         Finalisez votre paiement pour confirmer la commande.
                       </p>
@@ -148,14 +152,14 @@ const Suivi = () => {
                 {/* Infos livraison */}
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-4">
                   <span className="flex items-center gap-1">
-                    📍 {commande.adresseLivraison}
+                    <i className="ti ti-map-pin text-sm" /> {commande.adresseLivraison}
                   </span>
                   <span className="flex items-center gap-1">
-                    💳 {commande.modePaiement === 'en_ligne' ? 'Payé en ligne' : 'Paiement à la livraison'}
+                    <i className="ti ti-credit-card text-sm" /> {commande.modePaiement === 'en_ligne' ? 'Payé en ligne' : 'Paiement à la livraison'}
                   </span>
                   {commande.livraison?.livreur && (
                     <span className="flex items-center gap-1">
-                      🛵 {commande.livraison.livreur.nom}
+                      <i className="ti ti-truck-delivery text-sm" /> {commande.livraison.livreur.nom}
                     </span>
                   )}
                 </div>
@@ -182,14 +186,18 @@ const Suivi = () => {
                     taille="sm"
                     onClick={() => setCommandeNote(commande)}
                   >
-                    ⭐ Noter cette commande
+                    <i className="ti ti-star text-base" /> Noter cette commande
                   </Button>
                 )}
 
                 {/* Note déjà donnée */}
                 {commande.note && (
                   <div className="flex items-center gap-2 text-sm text-amber-600">
-                    <span>{'⭐'.repeat(commande.note)}</span>
+                    <span className="flex items-center gap-1">
+                      {Array.from({ length: commande.note }, (_, index) => (
+                        <i key={index} className="ti ti-star text-amber-400" />
+                      ))}
+                    </span>
                     <span className="text-gray-500">{commande.commentaire}</span>
                   </div>
                 )}

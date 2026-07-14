@@ -115,7 +115,7 @@ const Mission = () => {
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center
                           justify-center text-2xl">
-            🛵
+            <i className="ti ti-truck-delivery" />
           </div>
           <div>
             <h1 className="text-xl font-bold text-gray-900">Mission en cours</h1>
@@ -157,8 +157,8 @@ const Mission = () => {
 
       {/* Infos restaurant */}
       <div className="carte p-5 mb-4">
-        <h3 className="font-bold text-gray-700 text-xs uppercase mb-3">
-          📍 Récupérer chez
+        <h3 className="font-bold text-gray-700 text-xs uppercase mb-3 flex items-center gap-2">
+          <i className="ti ti-map-pin" /> Récupérer chez
         </h3>
         <p className="font-bold text-gray-900 text-lg mb-1">
           {commande?.restaurant?.nom}
@@ -172,15 +172,15 @@ const Mission = () => {
             className="inline-flex items-center gap-2 mt-3 text-orange-600
                        font-semibold text-sm hover:underline"
           >
-            📞 Appeler le restaurant
+            <i className="ti ti-phone" /> Appeler le restaurant
           </a>
         )}
       </div>
 
       {/* Infos client */}
       <div className="carte p-5 mb-6">
-        <h3 className="font-bold text-gray-700 text-xs uppercase mb-3">
-          🏠 Livrer chez
+        <h3 className="font-bold text-gray-700 text-xs uppercase mb-3 flex items-center gap-2">
+          <i className="ti ti-home" /> Livrer chez
         </h3>
         <p className="font-bold text-gray-900 text-lg mb-1">
           {commande?.client?.nom}
@@ -194,7 +194,7 @@ const Mission = () => {
             className="inline-flex items-center gap-2 text-orange-600
                        font-semibold text-sm hover:underline"
           >
-            📞 Appeler le client
+            <i className="ti ti-phone" /> Appeler le client
           </a>
         )}
       </div>
@@ -207,7 +207,7 @@ const Mission = () => {
           onClick={confirmerRecuperation}
           className="w-full py-4 text-base"
         >
-          ✅ J'ai récupéré la commande au restaurant
+          <i className="ti ti-package text-base" /> J'ai récupéré la commande
         </Button>
       )}
 
@@ -218,13 +218,15 @@ const Mission = () => {
           onClick={confirmerLivraison}
           className="w-full py-4 text-base"
         >
-          🎉 Livraison effectuée — Confirmer
+          <i className="ti ti-check text-base" /> Confirmer la livraison
         </Button>
       )}
 
       {livraison.statut === 'livree' && (
         <div className="carte p-8 text-center bg-green-50 border border-green-200">
-          <div className="text-6xl mb-4">🎉</div>
+          <div className="text-6xl mb-4">
+            <i className="ti ti-badge-check" />
+          </div>
           <h3 className="text-xl font-bold text-green-700 mb-2">
             Mission accomplie !
           </h3>

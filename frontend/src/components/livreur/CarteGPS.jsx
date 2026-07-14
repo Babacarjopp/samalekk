@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 
 const CENTRE_TOUBA = [14.8667, -15.8833];
 
-const creerIcone = (emoji, couleur) =>
+const creerIcone = (iconClass, couleur) =>
   L.divIcon({
     className: '',
     html: `<div style="
@@ -13,17 +13,18 @@ const creerIcone = (emoji, couleur) =>
       width:36px;height:36px;
       border-radius:50%;
       display:flex;align-items:center;justify-content:center;
-      font-size:18px;
+      font-size:16px;
+      color:white;
       border:2px solid white;
       box-shadow:0 2px 8px rgba(0,0,0,0.25);
-    ">${emoji}</div>`,
+    "><i class=\"${iconClass} \" style=\"font-size:16px;color:white\"></i></div>`,
     iconSize:   [36, 36],
     iconAnchor: [18, 18],
     popupAnchor:[0, -20],
   });
 
-const iconeLivreur = creerIcone('🛵', '#C8441A');
-const iconeClient  = creerIcone('🏠', '#1A6B3C');
+const iconeLivreur = creerIcone('ti ti-truck-delivery', '#C8441A');
+const iconeClient  = creerIcone('ti ti-home', '#1A6B3C');
 
 const AjusterVue = ({ positions }) => {
   const map = useMap();

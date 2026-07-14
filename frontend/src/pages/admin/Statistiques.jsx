@@ -47,12 +47,12 @@ const Statistiques = () => {
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-4 mb-8">
         <div className="carte p-6 bg-orange-50">
-          <div className="text-3xl mb-2">📦</div>
+          <div className="text-3xl mb-2"><i className="ti ti-package" /></div>
           <div className="text-3xl font-bold text-orange-700">{totalCommandes}</div>
           <div className="text-orange-600 text-sm mt-1">Commandes sur la période</div>
         </div>
         <div className="carte p-6 bg-green-50">
-          <div className="text-3xl mb-2">💰</div>
+          <div className="text-3xl mb-2"><i className="ti ti-wallet" /></div>
           <div className="text-2xl font-bold text-green-700">{formatPrix(totalRevenu)}</div>
           <div className="text-green-600 text-sm mt-1">Revenu sur la période</div>
         </div>

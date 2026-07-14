@@ -62,6 +62,14 @@ const Menu = () => {
     setPanierOuvert(true);
   };
 
+  const categorieIcones = {
+    'plat principal': 'ti ti-restaurant',
+    'entrée': 'ti ti-leaf',
+    'accompagnement': 'ti ti-bowl-chopsticks',
+    'dessert': 'ti ti-cake',
+    'boisson': 'ti ti-cup',
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
 
@@ -78,12 +86,15 @@ const Menu = () => {
             <h1 className="text-3xl font-bold mb-1">{restaurant.nom}</h1>
             <div className="flex items-center gap-4 text-sm">
               <span className="flex items-center gap-1">
-                ⭐ {restaurant.noteMoyenne > 0 ? restaurant.noteMoyenne.toFixed(1) : 'Nouveau'}
+                <i className="ti ti-star text-amber-400" /> {restaurant.noteMoyenne > 0 ? restaurant.noteMoyenne.toFixed(1) : 'Nouveau'}
                 {restaurant.nombreAvis > 0 && ` (${restaurant.nombreAvis} avis)`}
               </span>
-              <span>🕐 {restaurant.heureOuverture} – {restaurant.heureFermeture}</span>
-              <span className={restaurant.estOuvert ? 'text-green-400' : 'text-red-400'}>
-                {restaurant.estOuvert ? '🟢 Ouvert' : '🔴 Fermé'}
+              <span className="flex items-center gap-1">
+                <i className="ti ti-clock text-sm" /> {restaurant.heureOuverture} – {restaurant.heureFermeture}
+              </span>
+              <span className={`flex items-center gap-1 ${restaurant.estOuvert ? 'text-green-400' : 'text-red-400'}`}>
+                <i className={restaurant.estOuvert ? 'ti ti-circle-check' : 'ti ti-circle-x'} />
+                {restaurant.estOuvert ? 'Ouvert' : 'Fermé'}
               </span>
             </div>
           </div>
@@ -133,7 +144,9 @@ const Menu = () => {
           {/* Plats par catégorie */}
           {platsFiltres.length === 0 ? (
             <div className="text-center py-16">
-              <div className="text-5xl mb-4">🍽️</div>
+              <div className="text-5xl mb-4">
+                <i className="ti ti-file-search" />
+              </div>
               <p className="text-gray-500">Aucun plat disponible pour le moment.</p>
             </div>
           ) : (
@@ -143,11 +156,7 @@ const Menu = () => {
                 <div key={cat} className="mb-8">
                   <h2 className="text-xl font-bold text-gray-800 mb-4 capitalize
                                  flex items-center gap-2 pb-2 border-b border-gray-100">
-                    {cat === 'plat principal'   && '🍽️'}
-                    {cat === 'entrée'           && '🥗'}
-                    {cat === 'accompagnement'   && '🥘'}
-                    {cat === 'dessert'          && '🍰'}
-                    {cat === 'boisson'          && '🥤'}
+                    <i className={`${categorieIcones[cat]} text-lg`} />
                     <span className="capitalize">{cat}</span>
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

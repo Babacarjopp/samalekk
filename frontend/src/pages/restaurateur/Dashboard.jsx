@@ -7,11 +7,11 @@ import { tempsEcoule } from '../../utils/formatDate';
 import Loader from '../../components/common/Loader';
 
 const statutsConfig = {
-  confirmee:      { label: 'Nouvelle',       couleur: 'bg-blue-100 text-blue-700',    emoji: '🆕' },
-  en_preparation: { label: 'En préparation', couleur: 'bg-orange-100 text-orange-700',emoji: '🍳' },
-  en_livraison:   { label: 'En livraison',   couleur: 'bg-purple-100 text-purple-700',emoji: '🛵' },
-  livree:         { label: 'Livrée',         couleur: 'bg-green-100 text-green-700',  emoji: '✅' },
-  annulee:        { label: 'Annulée',        couleur: 'bg-red-100 text-red-700',      emoji: '❌' },
+  confirmee:      { label: 'Nouvelle',       couleur: 'bg-blue-100 text-blue-700',    icone: 'ti ti-new-section' },
+  en_preparation: { label: 'En préparation', couleur: 'bg-orange-100 text-orange-700',icone: 'ti ti-flame' },
+  en_livraison:   { label: 'En livraison',   couleur: 'bg-purple-100 text-purple-700',icone: 'ti ti-truck-delivery' },
+  livree:         { label: 'Livrée',         couleur: 'bg-green-100 text-green-700',  icone: 'ti ti-flag' },
+  annulee:        { label: 'Annulée',        couleur: 'bg-red-100 text-red-700',      icone: 'ti ti-x' },
 };
 
 const DashboardResto = () => {
@@ -79,17 +79,17 @@ const DashboardResto = () => {
           </h1>
           <p className="text-gray-500 mt-1">
             {restaurant?.statut === 'valide'
-              ? '🟢 Restaurant actif sur la plateforme'
-              : '🟡 En attente de validation par l\'administrateur'
+              ? <span className="inline-flex items-center gap-2 text-green-500"><i className="ti ti-circle-check" /> Restaurant actif sur la plateforme</span>
+              : <span className="inline-flex items-center gap-2 text-amber-500"><i className="ti ti-alert-circle" /> En attente de validation par l'administrateur</span>
             }
           </p>
         </div>
         <div className="flex gap-3">
           <Link to="/restaurant/menu" className="btn-secondaire-light btn-sm text-sm">
-            🍽️ Gérer le menu
+            <i className="ti ti-restaurant" /> Gérer le menu
           </Link>
           <Link to="/restaurant/commandes" className="btn-primaire btn-sm text-sm">
-            📋 Toutes les commandes
+            <i className="ti ti-list-check" /> Toutes les commandes
           </Link>
         </div>
       </div>
@@ -97,13 +97,13 @@ const DashboardResto = () => {
       {/* Cartes statistiques */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Commandes aujourd\'hui', val: commandesAujourdhui.length, emoji: '📦', couleur: 'bg-blue-50 text-blue-700' },
-          { label: 'Commandes actives',      val: commandesActives.length,    emoji: '🔥', couleur: 'bg-orange-50 text-orange-700' },
-          { label: 'Plats au menu',          val: restaurant?.plats?.length || 0, emoji: '🍽️', couleur: 'bg-green-50 text-green-700' },
-          { label: 'Revenu total',           val: formatPrix(revenuTotal),    emoji: '💰', couleur: 'bg-purple-50 text-purple-700' },
+          { label: 'Commandes aujourd\'hui', val: commandesAujourdhui.length, icone: 'ti ti-package', couleur: 'bg-blue-50 text-blue-700' },
+          { label: 'Commandes actives',      val: commandesActives.length,    icone: 'ti ti-flame', couleur: 'bg-orange-50 text-orange-700' },
+          { label: 'Plats au menu',          val: restaurant?.plats?.length || 0, icone: 'ti ti-restaurant', couleur: 'bg-green-50 text-green-700' },
+          { label: 'Revenu total',           val: formatPrix(revenuTotal),    icone: 'ti ti-wallet', couleur: 'bg-purple-50 text-purple-700' },
         ].map(stat => (
           <div key={stat.label} className={`carte p-5 ${stat.couleur}`}>
-            <div className="text-3xl mb-2">{stat.emoji}</div>
+            <div className="text-3xl mb-2"><i className={`${stat.icone} text-3xl`} /></div>
             <div className="text-2xl font-bold">{stat.val}</div>
             <div className="text-sm opacity-80 mt-1">{stat.label}</div>
           </div>
@@ -124,7 +124,7 @@ const DashboardResto = () => {
 
         {commandesActives.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-5xl mb-3">😴</div>
+            <div className="text-5xl mb-3"><i className="ti ti-mood-sad" /></div>
             <p className="text-gray-500">Aucune commande en cours pour le moment</p>
           </div>
         ) : (
@@ -142,19 +142,19 @@ const DashboardResto = () => {
                           {commande.client?.nom}
                         </span>
                         <span className={`badge-statut ${statut?.couleur}`}>
-                          {statut?.emoji} {statut?.label}
+                          <i className={`${statut?.icone} text-sm`} /> {statut?.label}
                         </span>
                       </div>
-                      <p className="text-gray-400 text-sm">
-                        📞 {commande.client?.telephone} · {tempsEcoule(commande.createdAt)}
+                      <p className="text-gray-400 text-sm flex items-center gap-2">
+                        <i className="ti ti-phone text-sm" /> {commande.client?.telephone} · {tempsEcoule(commande.createdAt)}
                       </p>
                     </div>
                     <div className="text-right">
                       <div className="font-bold text-orange-600">
                         {formatPrix(commande.montantTotal)}
                       </div>
-                      <div className="text-gray-400 text-xs">
-                        {commande.modePaiement === 'en_ligne' ? '💳 En ligne' : '💵 Cash'}
+                      <div className="text-gray-400 text-xs flex items-center gap-2">
+                        <i className="ti ti-credit-card text-sm" /> {commande.modePaiement === 'en_ligne' ? 'En ligne' : 'Cash'}
                       </div>
                     </div>
                   </div>
@@ -176,7 +176,7 @@ const DashboardResto = () => {
                         onClick={() => changerStatut(commande.id, 'en_preparation')}
                         className="btn-primaire text-xs px-4 py-2"
                       >
-                        🍳 Commencer la préparation
+                        <i className="ti ti-flame" /> Commencer la préparation
                       </button>
                     )}
                     {commande.statut === 'en_preparation' && (
@@ -184,7 +184,7 @@ const DashboardResto = () => {
                         onClick={() => changerStatut(commande.id, 'en_livraison')}
                         className="btn-vert text-xs px-4 py-2"
                       >
-                        🛵 Prête pour livraison
+                        <i className="ti ti-truck-delivery" /> Prête pour livraison
                       </button>
                     )}
                     {commande.statut === 'en_livraison' && (

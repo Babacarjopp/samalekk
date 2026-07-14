@@ -29,7 +29,10 @@ const RestaurantCard = ({ restaurant }) => {
                            ? 'bg-green-500 text-white'
                            : 'bg-gray-700 text-gray-200'
                          }`}>
-          {estOuvert ? '🟢 Ouvert' : '🔴 Fermé'}
+          <span className="inline-flex items-center gap-1">
+            <i className={estOuvert ? 'ti ti-circle-check' : 'ti ti-circle-x'} />
+            {estOuvert ? 'Ouvert' : 'Fermé'}
+          </span>
         </div>
 
         {/* Catégorie */}
@@ -56,7 +59,7 @@ const RestaurantCard = ({ restaurant }) => {
                         border-t border-gray-100">
           {/* Note */}
           <div className="flex items-center gap-1">
-            <span className="text-amber-400">⭐</span>
+            <i className="ti ti-star text-amber-400" />
             <span className="font-semibold text-gray-800 text-sm">
               {noteMoyenne > 0 ? noteMoyenne.toFixed(1) : 'Nouveau'}
             </span>
@@ -67,7 +70,7 @@ const RestaurantCard = ({ restaurant }) => {
 
           {/* Horaires */}
           <div className="text-gray-400 text-xs flex items-center gap-1">
-            <span>🕐</span>
+            <i className="ti ti-clock" />
             {heureOuverture} – {heureFermeture}
           </div>
         </div>

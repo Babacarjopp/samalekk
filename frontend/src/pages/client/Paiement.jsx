@@ -6,8 +6,8 @@ import Button from '../../components/common/Button';
 import Loader from '../../components/common/Loader';
 
 const methodes = [
-  { valeur: 'wave',          label: 'Wave',          emoji: '🌊', couleur: 'border-blue-500 bg-blue-50' },
-  { valeur: 'orange_money',  label: 'Orange Money',  emoji: '🟠', couleur: 'border-orange-500 bg-orange-50' },
+  { valeur: 'wave',          label: 'Wave',          icone: 'ti ti-wave', couleur: 'border-blue-500 bg-blue-50' },
+  { valeur: 'orange_money',  label: 'Orange Money',  icone: 'ti ti-circle-dashed', couleur: 'border-orange-500 bg-orange-50' },
 ];
 
 const Paiement = () => {
@@ -92,7 +92,7 @@ const Paiement = () => {
     return (
       <div className="min-h-[60vh] flex items-center justify-center p-4">
         <div className="text-center animer max-w-md">
-          <div className="text-8xl mb-6">✅</div>
+          <div className="text-8xl mb-6"><i className="ti ti-check" /></div>
           <h2 className="text-3xl font-bold text-gray-900 mb-3">Paiement confirmé !</h2>
           <p className="text-gray-500 mb-2">
             Votre commande de {formatPrix(montant)} a été validée.
@@ -109,7 +109,7 @@ const Paiement = () => {
     return (
       <div className="min-h-[60vh] flex items-center justify-center p-4">
         <div className="text-center max-w-md">
-          <div className="text-8xl mb-6">❌</div>
+          <div className="text-8xl mb-6"><i className="ti ti-x" /></div>
           <h2 className="text-3xl font-bold text-gray-900 mb-3">Paiement échoué</h2>
           <p className="text-gray-500 mb-6">
             Votre commande a été annulée. Vous pouvez réessayer depuis le panier.
@@ -143,7 +143,7 @@ const Paiement = () => {
                               flex items-center gap-4
                               ${methode === m.valeur ? m.couleur : 'border-gray-200 hover:border-gray-300'}`}
                 >
-                  <span className="text-3xl">{m.emoji}</span>
+                  <span className="text-3xl"><i className={`${m.icone} text-2xl`} /></span>
                   <span className="font-semibold text-gray-900">{m.label}</span>
                   {methode === m.valeur && (
                     <span className="ml-auto text-orange-600 text-xl">✓</span>
@@ -174,7 +174,7 @@ const Paiement = () => {
         <div className="space-y-6">
           <div className="carte p-6 bg-amber-50 border border-amber-200">
             <h2 className="font-bold text-amber-800 mb-2 flex items-center gap-2">
-              🧪 Mode simulation
+            <i className="ti ti-flask" /> Mode simulation
             </h2>
             <p className="text-amber-700 text-sm">
               En production, vous seriez redirigé vers{' '}
@@ -185,7 +185,7 @@ const Paiement = () => {
 
           <div className="carte p-6 text-center">
             <div className="text-5xl mb-4">
-              {methodes.find(m => m.valeur === methode)?.emoji}
+              <i className={`${methodes.find(m => m.valeur === methode)?.icone} text-3xl`} />
             </div>
             <p className="text-gray-600 mb-1">Paiement en attente</p>
             <p className="text-2xl font-bold text-gray-900">{formatPrix(montant)}</p>

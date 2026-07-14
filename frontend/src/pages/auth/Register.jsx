@@ -5,9 +5,9 @@ import { redirectionApresAuth } from '../../utils/redirectionAuth';
 import Button from '../../components/common/Button';
 
 const roles = [
-  { valeur: 'client',       label: 'Client',       emoji: '🛒', desc: 'Commander de la nourriture' },
-  { valeur: 'restaurateur', label: 'Restaurateur',  emoji: '🍴', desc: 'Gérer mon restaurant' },
-  { valeur: 'livreur',      label: 'Livreur',       emoji: '🛵', desc: 'Effectuer des livraisons' },
+  { valeur: 'client',       label: 'Client',       icone: 'ti ti-shopping-cart', desc: 'Commander de la nourriture' },
+  { valeur: 'restaurateur', label: 'Restaurateur',  icone: 'ti ti-bowl-chopsticks', desc: 'Gérer mon restaurant' },
+  { valeur: 'livreur',      label: 'Livreur',       icone: 'ti ti-truck-delivery', desc: 'Effectuer des livraisons' },
 ];
 
 const Register = () => {
@@ -78,7 +78,7 @@ const Register = () => {
                     onClick={() => setForm({ ...form, role: r.valeur })}
                     className={`role-opt ${form.role === r.valeur ? 'on' : ''}`}
                   >
-                    <span className="role-ico">{r.emoji}</span>
+                    <span className="role-ico"><i className={`${r.icone} text-xl`} /></span>
                     <span className="role-label">{r.label}</span>
                     <span className="role-sub">{r.desc}</span>
                   </button>

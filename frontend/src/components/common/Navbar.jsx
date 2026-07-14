@@ -48,10 +48,10 @@ const Navbar = () => {
 
         {/* Liens centre */}
         <div className="nav-links">
-          <Link to="/restaurants" className="nav-link">Restaurants</Link>
+          <Link to="/restaurants" className="nav-link">Restos</Link>
           {estConnecte && utilisateur?.role !== 'client' && (
             <Link to={lienDashboard[utilisateur?.role]} className="nav-link">
-              Mon espace
+              Compte
             </Link>
           )}
         </div>
@@ -92,13 +92,13 @@ const Navbar = () => {
                       onClick={() => setMenuOuvert(false)}
                     >
                       <i className="ti ti-layout-dashboard" />
-                      Mon espace
+                      Mon compte
                     </Link>
                   )}
 
                   <button className="nav-dd-item red" onClick={handleDeconnexion}>
                     <i className="ti ti-logout" />
-                    Déconnexion
+                    Se déconnecter
                   </button>
                 </div>
               )}

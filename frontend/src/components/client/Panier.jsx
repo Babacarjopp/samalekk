@@ -23,7 +23,9 @@ const Panier = ({ restaurant }) => {
   if (nombreArticles === 0) {
     return (
       <div className="carte p-6 text-center">
-        <div className="text-5xl mb-4">🛒</div>
+        <div className="text-5xl mb-4">
+          <i className="ti ti-shopping-cart" />
+        </div>
         <h3 className="font-semibold text-gray-700 mb-2">Votre panier est vide</h3>
         <p className="text-gray-400 text-sm">
           Ajoutez des plats pour commencer votre commande
@@ -53,7 +55,7 @@ const Panier = ({ restaurant }) => {
 
       {/* Nom du restaurant */}
       <div className="text-xs text-gray-400 mb-4 flex items-center gap-1">
-        <span>🍴</span> {restaurant?.nom}
+        <i className="ti ti-restaurant text-sm" /> {restaurant?.nom}
       </div>
 
       {/* Liste articles */}

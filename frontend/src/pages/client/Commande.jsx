@@ -9,8 +9,8 @@ import Button from '../../components/common/Button';
 const FRAIS_LIVRAISON = 500;
 
 const modesPaiement = [
-  { valeur: 'en_ligne',      label: 'Payer en ligne',      emoji: '📱', desc: 'Wave ou Orange Money' },
-  { valeur: 'a_la_livraison', label: 'Payer à la livraison', emoji: '💵', desc: 'Cash au livreur' },
+  { valeur: 'en_ligne',      label: 'Payer en ligne',      icone: 'ti ti-mobile', desc: 'Wave ou Orange Money' },
+  { valeur: 'a_la_livraison', label: 'Payer à la livraison', icone: 'ti ti-cash', desc: 'Cash au livreur' },
 ];
 
 const Commande = () => {
@@ -93,7 +93,7 @@ const Commande = () => {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center animer">
-          <div className="text-8xl mb-6">🎉</div>
+          <div className="text-8xl mb-6"><i className="ti ti-gift" /></div>
           <h2 className="text-3xl font-bold text-gray-900 mb-3">
             Commande passée !
           </h2>
@@ -130,7 +130,7 @@ const Commande = () => {
             {position && (
               <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4
                               text-sm text-green-700 flex items-center gap-2">
-                <span>📍</span> Position GPS détectée — livraison optimisée
+                <i className="ti ti-map-pin" /> Position GPS détectée — livraison optimisée
               </div>
             )}
 
@@ -165,13 +165,13 @@ const Commande = () => {
                                 : 'border-gray-200 hover:border-orange-300'
                               }`}
                 >
-                  <span className="text-3xl">{mode.emoji}</span>
+                  <span className="text-3xl"><i className={`${mode.icone} text-2xl`} /></span>
                   <div>
                     <div className="font-semibold text-gray-900">{mode.label}</div>
                     <div className="text-gray-500 text-sm">{mode.desc}</div>
                   </div>
                   {modePaiement === mode.valeur && (
-                    <span className="ml-auto text-orange-600 text-xl">✓</span>
+                    <span className="ml-auto text-orange-600 text-xl"><i className="ti ti-check" /></span>
                   )}
                 </button>
               ))}
@@ -181,7 +181,7 @@ const Commande = () => {
           {erreur && (
             <div className="bg-red-50 border border-red-200 text-red-700
                             rounded-xl p-4 flex items-center gap-2">
-              <span>⚠️</span> {erreur}
+              <i className="ti ti-alert-circle" /> {erreur}
             </div>
           )}
         </div>
@@ -190,7 +190,7 @@ const Commande = () => {
         <div className="lg:col-span-1">
           <div className="carte p-5 sticky top-24">
             <h3 className="font-bold text-gray-900 mb-1">Récapitulatif</h3>
-            <p className="text-gray-400 text-sm mb-4">🍴 {restaurantNom}</p>
+            <p className="text-gray-400 text-sm mb-4"><i className="ti ti-restaurant text-sm" /> {restaurantNom}</p>
 
             {/* Articles */}
             <div className="space-y-2 mb-4">

@@ -3,7 +3,8 @@ import { AuthProvider } from './context/AuthContext';
 import { PanierProvider } from './context/PanierContext';
 import PrivateRoute from './routes/PrivateRoute';
 import Navbar from './components/common/Navbar';
-
+import Footer from './components/common/Footer';
+ 
 // Pages Auth
 import Login    from './pages/auth/Login';
 import Register from './pages/auth/Register';
@@ -34,11 +35,14 @@ import DashboardAdmin   from './pages/admin/Dashboard';
 import Utilisateurs     from './pages/admin/Utilisateurs';
 import Statistiques     from './pages/admin/Statistiques';
 
-// Composant layout avec Navbar
+// Composant layout avec Navbar et footer cohérent
 const Layout = ({ children, avecNavbar = true }) => (
-  <div className="min-h-screen bg-[#F5EFE8]">
+  <div className="min-h-screen flex flex-col bg-[#E8E0D8] text-slate-900">
     {avecNavbar && <Navbar />}
-    <main>{children}</main>
+    <main className="flex-grow">
+      {children}
+    </main>
+    <Footer />
   </div>
 );
 

@@ -5,12 +5,12 @@ import RestaurantCard from '../../components/client/RestaurantCard';
 import Loader from '../../components/common/Loader';
 
 const categories = [
-  { valeur: '',             label: 'Tous',         emoji: '🍽️' },
-  { valeur: 'sénégalaise',  label: 'Sénégalaise',  emoji: '🍚' },
-  { valeur: 'grillades',    label: 'Grillades',     emoji: '🍖' },
-  { valeur: 'fast-food',    label: 'Fast-food',     emoji: '🍔' },
-  { valeur: 'sandwicherie', label: 'Sandwicherie',  emoji: '🥖' },
-  { valeur: 'pâtisserie',   label: 'Pâtisserie',    emoji: '🍰' },
+  { valeur: '',             label: 'Tous',         icone: 'ti ti-restaurant' },
+  { valeur: 'sénégalaise',  label: 'Sénégalaise',  icone: 'ti ti-bowl-chopsticks' },
+  { valeur: 'grillades',    label: 'Grillades',     icone: 'ti ti-flame' },
+  { valeur: 'fast-food',    label: 'Fast-food',     icone: 'ti ti-burger' },
+  { valeur: 'sandwicherie', label: 'Sandwicherie',  icone: 'ti ti-bread' },
+  { valeur: 'pâtisserie',   label: 'Pâtisserie',    icone: 'ti ti-cake' },
 ];
 
 const Restaurants = () => {
@@ -67,7 +67,7 @@ const Restaurants = () => {
         <div className="flex gap-3">
           <div className="flex-1 relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
-              🔍
+              <i className="ti ti-search" />
             </span>
             <input
               type="text"
@@ -96,7 +96,8 @@ const Restaurants = () => {
                           : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300'
                         }`}
           >
-            <span>{cat.emoji}</span> {cat.label}
+           <i className={`${cat.icone} text-base`} />
+           <span>{cat.label}</span>
           </button>
         ))}
       </div>
@@ -106,7 +107,9 @@ const Restaurants = () => {
         <Loader texte="Chargement des restaurants..." />
       ) : restaurants.length === 0 ? (
         <div className="text-center py-20">
-          <div className="text-6xl mb-4">🍽️</div>
+          <div className="text-6xl mb-4">
+            <i className="ti ti-restaurant" />
+          </div>
           <h3 className="text-xl font-bold text-gray-700 mb-2">
             Aucun restaurant trouvé
           </h3>

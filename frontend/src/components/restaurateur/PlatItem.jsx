@@ -46,16 +46,16 @@ const PlatItem = ({ plat, onModifier, onSupprimer }) => {
               <button
                 onClick={() => onModifier(plat)}
                 className="text-blue-600 hover:text-blue-800 text-sm font-medium
-                           transition-colors"
+                         transition-colors inline-flex items-center gap-2"
               >
-                ✏️ Modifier
+              <i className="ti ti-pencil" /> Modifier
               </button>
               <button
                 onClick={() => onSupprimer(plat.id)}
                 className="text-red-500 hover:text-red-700 text-sm font-medium
-                           transition-colors"
+                         transition-colors inline-flex items-center gap-2"
               >
-                🗑️ Retirer
+              <i className="ti ti-trash" /> Retirer
               </button>
             </div>
           )}

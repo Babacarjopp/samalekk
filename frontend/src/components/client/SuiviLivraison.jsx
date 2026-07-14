@@ -4,10 +4,10 @@ import useSocket from '../../hooks/useSocket';
 import CarteGPS from '../livreur/CarteGPS';
 
 const statutsEtapes = [
-  { statut: 'en_attente', label: 'Commande confirmée',          emoji: '✅' },
-  { statut: 'acceptee',   label: 'Livreur en route vers le restaurant', emoji: '🛵' },
-  { statut: 'recuperee',  label: 'Commande récupérée',          emoji: '📦' },
-  { statut: 'livree',     label: 'Commande livrée',             emoji: '🎉' },
+  { statut: 'en_attente', label: 'Commande confirmée',          icone: 'ti ti-check' },
+  { statut: 'acceptee',   label: 'Livreur en route vers le restaurant', icone: 'ti ti-truck-delivery' },
+  { statut: 'recuperee',  label: 'Commande récupérée',          icone: 'ti ti-package' },
+  { statut: 'livree',     label: 'Commande livrée',             icone: 'ti ti-flag' },
 ];
 
 // Composant de suivi temps réel d'une livraison (utilisé par le client)
@@ -58,8 +58,13 @@ const SuiviLivraison = ({ livraisonId, positionClient }) => {
           </div>
           <div className="flex-1">
             <p className="font-bold text-gray-900">{livraison.livreur.nom}</p>
-            <p className="text-gray-500 text-sm">
-              🛵 {livraison.livreur.vehicule || 'Livreur'} · 📞 {livraison.livreur.telephone}
+            <p className="text-gray-500 text-sm flex flex-wrap items-center gap-3">
+              <span className="flex items-center gap-2">
+                <i className="ti ti-truck-delivery" /> {livraison.livreur.vehicule || 'Livreur'}
+              </span>
+              <span className="flex items-center gap-2">
+                <i className="ti ti-phone" /> {livraison.livreur.telephone}
+              </span>
             </p>
           </div>
           <a
@@ -67,7 +72,7 @@ const SuiviLivraison = ({ livraisonId, positionClient }) => {
             className="w-10 h-10 bg-orange-600 rounded-full flex items-center
                        justify-center text-white hover:bg-orange-700 transition-colors"
           >
-            📞
+            <i className="ti ti-phone" />
           </a>
         </div>
       )}
@@ -84,7 +89,7 @@ const SuiviLivraison = ({ livraisonId, positionClient }) => {
                                  ? 'bg-orange-600 text-white shadow-md'
                                  : 'bg-gray-100 text-gray-400'
                                }`}>
-                {i <= etapeActuelle ? etape.emoji : '○'}
+                <i className={i <= etapeActuelle ? `${etape.icone} text-base` : 'ti ti-circle text-sm'} />
               </div>
               <span className={`text-sm transition-colors duration-300
                                 ${i <= etapeActuelle
@@ -105,7 +110,7 @@ const SuiviLivraison = ({ livraisonId, positionClient }) => {
       {(positionLivreur || positionClient) && (
         <div>
           <h4 className="font-bold text-gray-800 mb-2 text-sm flex items-center gap-2">
-            🗺️ Position du livreur en temps réel
+            <i className="ti ti-map-pin" /> Position du livreur en temps réel
             {positionLivreur && (
               <span className="flex items-center gap-1 text-green-600 text-xs font-normal">
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"/>

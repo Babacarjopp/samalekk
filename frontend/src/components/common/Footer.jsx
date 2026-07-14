@@ -2,56 +2,23 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-gray-400 py-12 px-4 mt-auto">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-
-          {/* Logo et description */}
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 bg-orange-600 rounded-xl flex items-center justify-center">
-                <span className="text-white text-lg">🍽️</span>
-              </div>
-              <div>
-                <span className="text-white font-bold block leading-none">Touba</span>
-                <span className="text-orange-400 text-xs">Food Delivery</span>
-              </div>
-            </div>
-            <p className="text-sm leading-relaxed">
-              La plateforme de commande et livraison de repas à Touba, Sénégal.
-              Rapide, fiable et local.
-            </p>
+    <footer className="bg-[#2A2420] text-[#7A7470] py-8 px-4 mt-auto border-t-2 border-[#D0C8C0]">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-6">
+          
+          <div className="flex items-center gap-2">
+            <span className="text-[#8B5A2B] text-xl font-semibold">Sama Lekk</span>
           </div>
 
-          {/* Liens rapides */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Liens rapides</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link to="/restaurants" className="hover:text-orange-400 transition-colors">Restaurants</Link></li>
-              <li><Link to="/inscription"  className="hover:text-orange-400 transition-colors">S'inscrire</Link></li>
-              <li><Link to="/connexion"    className="hover:text-orange-400 transition-colors">Se connecter</Link></li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Contact</h4>
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-center gap-2">
-                <span>📍</span> Touba, Sénégal
-              </li>
-              <li className="flex items-center gap-2">
-                <span>📞</span> +221 77 000 00 00
-              </li>
-              <li className="flex items-center gap-2">
-                <span>✉️</span> contact@toubafood.sn
-              </li>
-            </ul>
+          <div className="flex gap-6 text-sm">
+            <Link to="/restaurants" className="hover:text-[#8B5A2B]">Restos</Link>
+            <Link to="/inscription" className="hover:text-[#8B5A2B]">S'inscrire</Link>
+            <Link to="/connexion" className="hover:text-[#8B5A2B]">Connexion</Link>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-6 text-center text-sm">
-          <p>© 2026 Sama Lekk — Tous droits réservés</p>
+        <div className="text-center text-xs">
+          <p>Touba, Sénégal • 2026</p>
         </div>
       </div>
     </footer>

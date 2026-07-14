@@ -4,10 +4,10 @@ import Button from '../common/Button';
 const UserTable = ({ utilisateurs = [], onChangerStatut, actionEnCours }) => {
 
   const rolesConfig = {
-    client:       { label: 'Client',       couleur: 'bg-blue-100 text-blue-700',    emoji: '👤' },
-    restaurateur: { label: 'Restaurateur', couleur: 'bg-orange-100 text-orange-700',emoji: '🍴' },
-    livreur:      { label: 'Livreur',      couleur: 'bg-purple-100 text-purple-700',emoji: '🛵' },
-    admin:        { label: 'Admin',        couleur: 'bg-red-100 text-red-700',      emoji: '🔧' },
+    client:       { label: 'Client',       couleur: 'bg-blue-100 text-blue-700',    icone: 'ti ti-user' },
+    restaurateur: { label: 'Restaurateur', couleur: 'bg-orange-100 text-orange-700',icone: 'ti ti-bowl-chopsticks' },
+    livreur:      { label: 'Livreur',      couleur: 'bg-purple-100 text-purple-700',icone: 'ti ti-truck-delivery' },
+    admin:        { label: 'Admin',        couleur: 'bg-red-100 text-red-700',      icone: 'ti ti-settings' },
   };
 
   const statutsConfig = {
@@ -57,8 +57,8 @@ const UserTable = ({ utilisateurs = [], onChangerStatut, actionEnCours }) => {
                   </div>
                 </td>
                 <td className="px-4 py-3">
-                  <span className={`badge-statut ${role.couleur}`}>
-                    {role.emoji} {role.label}
+                  <span className={`badge-statut ${role.couleur} inline-flex items-center gap-2`}>
+                    <i className={`${role.icone} text-sm`} /> {role.label}
                   </span>
                 </td>
                 <td className="px-4 py-3">

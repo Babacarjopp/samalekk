@@ -6,12 +6,12 @@ import Loader from '../../components/common/Loader';
 import Button from '../../components/common/Button';
 
 const statutsConfig = {
-  confirmee:      { label: 'Nouvelle',       couleur: 'bg-blue-100 text-blue-700',    emoji: '🆕' },
-  en_preparation: { label: 'En préparation', couleur: 'bg-orange-100 text-orange-700',emoji: '🍳' },
-  en_livraison:   { label: 'En livraison',   couleur: 'bg-purple-100 text-purple-700',emoji: '🛵' },
-  livree:         { label: 'Livrée',         couleur: 'bg-green-100 text-green-700',  emoji: '✅' },
-  annulee:        { label: 'Annulée',        couleur: 'bg-red-100 text-red-700',      emoji: '❌' },
-  en_attente:     { label: 'En attente',     couleur: 'bg-yellow-100 text-yellow-700',emoji: '⏳' },
+  confirmee:      { label: 'Nouvelle',       couleur: 'bg-blue-100 text-blue-700',    icone: 'ti ti-new-section' },
+  en_preparation: { label: 'En préparation', couleur: 'bg-orange-100 text-orange-700',icone: 'ti ti-flame' },
+  en_livraison:   { label: 'En livraison',   couleur: 'bg-purple-100 text-purple-700',icone: 'ti ti-truck-delivery' },
+  livree:         { label: 'Livrée',         couleur: 'bg-green-100 text-green-700',  icone: 'ti ti-flag' },
+  annulee:        { label: 'Annulée',        couleur: 'bg-red-100 text-red-700',      icone: 'ti ti-x' },
+  en_attente:     { label: 'En attente',     couleur: 'bg-yellow-100 text-yellow-700',icone: 'ti ti-clock' },
 };
 
 const CommandesResto = () => {
@@ -84,7 +84,7 @@ const CommandesResto = () => {
                             : 'bg-white text-gray-600 border-gray-200'
                           }`}
             >
-              {cfg.emoji} {cfg.label} ({count})
+             <i className={`${cfg.icone} text-sm mr-1`} /> {cfg.label} ({count})
             </button>
           );
         })}
@@ -94,7 +94,7 @@ const CommandesResto = () => {
       <div className="space-y-4">
         {commandesFiltrees.length === 0 ? (
           <div className="carte p-12 text-center">
-            <div className="text-5xl mb-4">📭</div>
+            <div className="text-5xl mb-4"><i className="ti ti-inbox" /></div>
             <p className="text-gray-500">Aucune commande dans cette catégorie</p>
           </div>
         ) : (
@@ -108,8 +108,8 @@ const CommandesResto = () => {
                       <span className="font-bold text-gray-900">
                         {commande.client?.nom}
                       </span>
-                      <span className={`badge-statut ${statut.couleur}`}>
-                        {statut.emoji} {statut.label}
+                      <span className={`badge-statut ${statut.couleur} inline-flex items-center gap-2`}>
+                        <i className={`${statut.icone} text-sm`} /> {statut.label}
                       </span>
                     </div>
                     <p className="text-gray-400 text-sm">
@@ -120,8 +120,8 @@ const CommandesResto = () => {
                     <div className="font-bold text-orange-600 text-lg">
                       {formatPrix(commande.montantTotal)}
                     </div>
-                    <div className="text-gray-400 text-xs">
-                      {commande.modePaiement === 'en_ligne' ? '💳 Payé' : '💵 Cash'}
+                    <div className="text-gray-400 text-xs flex items-center gap-2">
+                      <i className="ti ti-credit-card text-sm" /> {commande.modePaiement === 'en_ligne' ? 'Payé' : 'Cash'}
                     </div>
                   </div>
                 </div>
@@ -142,7 +142,7 @@ const CommandesResto = () => {
                       chargement={action === commande.id}
                       onClick={() => changerStatut(commande.id, 'en_preparation')}
                     >
-                      🍳 Commencer
+                      <i className="ti ti-flame text-base" /> Commencer
                     </Button>
                   )}
                   {commande.statut === 'en_preparation' && (
@@ -151,7 +151,7 @@ const CommandesResto = () => {
                       chargement={action === commande.id}
                       onClick={() => changerStatut(commande.id, 'en_livraison')}
                     >
-                      🛵 Prête
+                      <i className="ti ti-truck-delivery text-base" /> Prête
                     </Button>
                   )}
                 </div>
