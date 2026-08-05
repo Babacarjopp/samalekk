@@ -6,7 +6,7 @@ const obtenirRestaurants = async (req, res) => {
   try {
     const { categorie, recherche } = req.query;
 
-    const conditions = { statut: 'valide' };
+    const conditions = { statut: 'valide', estOuvert: true };
 
     // Filtrer par catégorie si demandé
     if (categorie) conditions.categorie = categorie;
@@ -38,14 +38,14 @@ const obtenirRestaurants = async (req, res) => {
 const obtenirRestaurant = async (req, res) => {
   try {
     const restaurant = await Restaurant.findOne({
-      where: { id: req.params.id, statut: 'valide' },
+      where: { id: req.params.id, statut: 'valide', estOuvert: true },
       include: [
         {
           model: Plat,
           as: 'plats',
           where: { disponible: true },
           required: false,
-          attributes: ['id', 'nom', 'description', 'prix', 'image', 'categorie']
+          attributes: ['id', 'nom', 'description', 'prix', 'image', 'categorie', 'stock']
         },
         {
           model: Utilisateur,

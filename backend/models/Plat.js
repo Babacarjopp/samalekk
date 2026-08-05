@@ -40,6 +40,12 @@ const Plat = sequelize.define('Plat', {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
+  stock: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 100,
+    validate: { min: 0 }
+  },
   restaurantId: {
     type: DataTypes.UUID,
     allowNull: false

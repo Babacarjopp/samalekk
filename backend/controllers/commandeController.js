@@ -2,6 +2,7 @@ const { Commande, LigneCommande, Plat, Restaurant, Livraison, Paiement, Utilisat
 const { calculerDistance, calculFraisLivraison } = require('../utils/calculFraisLivraison');
 const { envoyerNotification } = require('../utils/sendNotification');
 const { sequelize } = require('../config/db');
+const { validerStockDisponible } = require('../utils/stockUtils');
 
 // ─── PASSER UNE COMMANDE ────────────────────────────────────────────────────
 const passerCommande = async (req, res) => {
@@ -20,12 +21,12 @@ const passerCommande = async (req, res) => {
 
     // Vérifier que le restaurant existe et est ouvert
     const restaurant = await Restaurant.findOne({
-      where: { id: restaurantId, statut: 'valide', estOuvert: true }
+      where: { id: restaurantId, statut: 'valide' }
     });
 
-    if (!restaurant) {
+    if (!restaurant || !restaurant.estOuvert) {
       await transaction.rollback();
-      return res.status(404).json({ message: 'Restaurant fermé ou introuvable.' });
+      return res.status(400).json({ message: 'Restaurant suspendu, fermé ou indisponible pour le moment.' });
     }
 
     // Calculer le montant total et vérifier la disponibilité des plats
@@ -41,6 +42,13 @@ const passerCommande = async (req, res) => {
         await transaction.rollback();
         return res.status(400).json({
           message: `Le plat demandé n'est plus disponible.`
+        });
+      }
+
+      if (!validerStockDisponible(plat, item.quantite)) {
+        await transaction.rollback();
+        return res.status(400).json({
+          message: `Le plat "${plat.nom}" n'est plus disponible en quantité suffisante.`
         });
       }
 
@@ -82,6 +90,8 @@ const passerCommande = async (req, res) => {
 
     // Créer les lignes de commande
     for (const ligne of lignesACreer) {
+      const plat = await Plat.findByPk(ligne.platId, { transaction });
+      await plat.update({ stock: plat.stock - ligne.quantite }, { transaction });
       await LigneCommande.create({
         ...ligne,
         commandeId: commande.id

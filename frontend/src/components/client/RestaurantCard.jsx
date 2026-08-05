@@ -27,7 +27,7 @@ const RestaurantCard = ({ restaurant }) => {
         <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold
                          ${estOuvert
                            ? 'bg-green-500 text-white'
-                           : 'bg-gray-700 text-gray-200'
+                           : 'bg-red-500 text-white'
                          }`}>
           <span className="inline-flex items-center gap-1">
             <i className={estOuvert ? 'ti ti-circle-check' : 'ti ti-circle-x'} />
@@ -83,7 +83,7 @@ const RestaurantCard = ({ restaurant }) => {
                             ? 'bg-orange-600 text-white group-hover:bg-orange-700'
                             : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                           }`}>
-            {estOuvert ? 'Voir le menu →' : 'Actuellement fermé'}
+            {estOuvert ? 'Voir le menu →' : 'Restaurant fermé'}
           </div>
         </div>
       </div>

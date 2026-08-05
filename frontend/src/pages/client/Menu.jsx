@@ -53,6 +53,7 @@ const Menu = () => {
   }, {});
 
   const categories = Object.keys(platsParCategorie);
+  const restaurantDisponible = restaurant?.statut === 'valide' && restaurant?.estOuvert;
 
   const handleCommander = () => {
     if (!estConnecte) {
@@ -84,7 +85,7 @@ const Menu = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
           <div className="absolute bottom-6 left-6 text-white">
             <h1 className="text-3xl font-bold mb-1">{restaurant.nom}</h1>
-            <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-4 text-sm flex-wrap">
               <span className="flex items-center gap-1">
                 <i className="ti ti-star text-amber-400" /> {restaurant.noteMoyenne > 0 ? restaurant.noteMoyenne.toFixed(1) : 'Nouveau'}
                 {restaurant.nombreAvis > 0 && ` (${restaurant.nombreAvis} avis)`}
@@ -92,7 +93,7 @@ const Menu = () => {
               <span className="flex items-center gap-1">
                 <i className="ti ti-clock text-sm" /> {restaurant.heureOuverture} – {restaurant.heureFermeture}
               </span>
-              <span className={`flex items-center gap-1 ${restaurant.estOuvert ? 'text-green-400' : 'text-red-400'}`}>
+              <span className={`flex items-center gap-1 px-2 py-1 rounded-full ${restaurant.estOuvert ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'}`}>
                 <i className={restaurant.estOuvert ? 'ti ti-circle-check' : 'ti ti-circle-x'} />
                 {restaurant.estOuvert ? 'Ouvert' : 'Fermé'}
               </span>
@@ -103,6 +104,14 @@ const Menu = () => {
         {restaurant.description && (
           <div className="p-5">
             <p className="text-gray-600">{restaurant.description}</p>
+          </div>
+        )}
+
+        {!restaurantDisponible && (
+          <div className="px-5 pb-5">
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              Ce restaurant est actuellement suspendu ou indisponible. Aucune commande ne pourra être passée.
+            </div>
           </div>
         )}
       </div>
@@ -165,7 +174,7 @@ const Menu = () => {
                         key={plat.id}
                         plat={plat}
                         restaurant={restaurant}
-                        estOuvert={restaurant.estOuvert}
+                        estOuvert={restaurantDisponible}
                       />
                     ))}
                   </div>

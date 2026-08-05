@@ -9,7 +9,7 @@ import api from '../../services/api';
 const categories = ['plat principal', 'entrée', 'accompagnement', 'dessert', 'boisson'];
 const IMAGE_DEFAUT = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80';
 
-const formVide = { nom: '', description: '', prix: '', categorie: 'plat principal', image: null };
+const formVide = { nom: '', description: '', prix: '', categorie: 'plat principal', stock: '100', image: null };
 
 const GestionMenu = () => {
   const [restaurant, setRestaurant]   = useState(null);
@@ -49,6 +49,7 @@ const GestionMenu = () => {
       description: plat.description || '',
       prix:        plat.prix,
       categorie:   plat.categorie,
+      stock:       plat.stock ?? 100,
       image:       null
     });
     setErreur('');
@@ -77,6 +78,7 @@ const GestionMenu = () => {
       formData.append('description', form.description);
       formData.append('prix',        form.prix);
       formData.append('categorie',   form.categorie);
+      formData.append('stock',       form.stock);
       if (form.image) formData.append('image', form.image);
 
       if (platSelectionne) {
@@ -289,6 +291,22 @@ const GestionMenu = () => {
                 ))}
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Stock disponible
+            </label>
+            <input
+              type="number"
+              name="stock"
+              value={form.stock}
+              onChange={handleChange}
+              placeholder="100"
+              min="0"
+              className="champ"
+            />
+            <p className="text-gray-400 text-xs mt-1">À 0, le plat apparaît en rupture.</p>
           </div>
 
           <div>

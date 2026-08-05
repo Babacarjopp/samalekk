@@ -10,9 +10,11 @@ const PlatCard = ({ plat, restaurant, estOuvert }) => {
 
   const articleDansPanier = articles.find(a => a.id === plat.id);
   const quantite = articleDansPanier?.quantite || 0;
+  const stockRestant = Math.max(0, (plat.stock ?? 0) - quantite);
+  const enRupture = stockRestant <= 0;
 
   const handleAjouter = () => {
-    if (!estOuvert) return;
+    if (!estOuvert || enRupture) return;
     ajouterAuPanier(plat, restaurant);
   };
 
@@ -32,16 +34,28 @@ const PlatCard = ({ plat, restaurant, estOuvert }) => {
 
       {/* Infos */}
       <div className="flex-1 min-w-0">
-        <h4 className="font-semibold text-gray-900 mb-1 truncate">{plat.nom}</h4>
+        <div className="flex items-start justify-between gap-2 mb-1">
+          <h4 className="font-semibold text-gray-900 truncate">{plat.nom}</h4>
+          {enRupture && (
+            <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-red-100 text-red-700 shrink-0">
+              Rupture
+            </span>
+          )}
+        </div>
 
         {plat.description && (
           <p className="text-gray-500 text-xs mb-2 line-clamp-2">{plat.description}</p>
         )}
 
         <div className="flex items-center justify-between mt-auto pt-1">
-          <span className="font-bold text-orange-600 text-sm">
-            {formatPrix(plat.prix)}
-          </span>
+          <div>
+            <span className="font-bold text-orange-600 text-sm">
+              {formatPrix(plat.prix)}
+            </span>
+            <p className={`text-xs mt-1 ${enRupture ? 'text-red-600' : 'text-gray-500'}`}>
+              {enRupture ? 'Plus en stock' : `En stock : ${stockRestant}`}
+            </p>
+          </div>
 
           {/* Contrôles quantité */}
           {estOuvert && (
@@ -60,9 +74,8 @@ const PlatCard = ({ plat, restaurant, estOuvert }) => {
                 </span>
                 <button
                   onClick={handleAjouter}
-                  className="w-7 h-7 rounded-full bg-orange-600 text-white
-                             font-bold hover:bg-orange-700 transition-colors
-                             flex items-center justify-center text-lg leading-none"
+                  disabled={enRupture}
+                  className={`w-7 h-7 rounded-full text-white font-bold transition-colors flex items-center justify-center text-lg leading-none ${enRupture ? 'bg-gray-300 cursor-not-allowed' : 'bg-orange-600 hover:bg-orange-700'}`}
                 >
                   +
                 </button>
@@ -70,10 +83,8 @@ const PlatCard = ({ plat, restaurant, estOuvert }) => {
             ) : (
               <button
                 onClick={handleAjouter}
-                className="w-8 h-8 rounded-full bg-orange-600 text-white
-                           font-bold hover:bg-orange-700 active:scale-90
-                           transition-all flex items-center justify-center
-                           text-xl leading-none shadow-md"
+                disabled={enRupture}
+                className={`w-8 h-8 rounded-full text-white font-bold active:scale-90 transition-all flex items-center justify-center text-xl leading-none shadow-md ${enRupture ? 'bg-gray-300 cursor-not-allowed' : 'bg-orange-600 hover:bg-orange-700'}`}
               >
                 +
               </button>

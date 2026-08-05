@@ -11,8 +11,10 @@ const Panier = ({ restaurant }) => {
   const navigate = useNavigate();
 
   const total = sousTotal + FRAIS_LIVRAISON;
+  const restaurantDisponible = restaurant?.statut === 'valide' && restaurant?.estOuvert;
 
   const handleCommander = () => {
+    if (!restaurantDisponible) return;
     if (!estConnecte) {
       navigate('/connexion');
       return;
@@ -118,9 +120,10 @@ const Panier = ({ restaurant }) => {
       {/* Bouton commander */}
       <button
         onClick={handleCommander}
-        className="btn-primaire w-full"
+        disabled={!restaurantDisponible}
+        className={`w-full py-3 rounded-xl font-semibold transition-all ${restaurantDisponible ? 'btn-primaire' : 'bg-gray-200 text-gray-500 cursor-not-allowed'}`}
       >
-        Commander — {formatPrix(total)}
+        {restaurantDisponible ? `Commander — ${formatPrix(total)}` : 'Restaurant indisponible'}
       </button>
     </div>
   );
