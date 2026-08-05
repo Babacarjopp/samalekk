@@ -1,4 +1,3 @@
-
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
@@ -12,6 +11,12 @@ const sequelize = new Sequelize(
     port: process.env.DB_PORT,
     dialect: 'postgres',
     logging: false, // mettre true pour voir les requêtes SQL en développement
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    },
     pool: {
       max: 10,      // maximum 10 connexions simultanées
       min: 0,
@@ -27,12 +32,9 @@ const connectDB = async () => {
     await sequelize.authenticate();
     console.log('✅ Connexion PostgreSQL établie avec succès');
   } catch (error) {
-    console.error('❌ Impossible de se connecter à PostgreSQL :', error.message);
+    console.error('❌ Impossible de se connecter à PostgreSQL :', error);
     process.exit(1);
   }
-
-
-
 };
 
 module.exports = { sequelize, connectDB };
