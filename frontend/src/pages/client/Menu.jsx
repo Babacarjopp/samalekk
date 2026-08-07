@@ -20,6 +20,7 @@ const Menu = () => {
   const [restaurant,    setRestaurant]    = useState(null);
   const [chargement,    setChargement]    = useState(true);
   const [categorieActive, setCategorieActive] = useState('');
+  const [categorieCuisineActive, setCategorieCuisineActive] = useState('');
   const [panierOuvert,  setPanierOuvert]  = useState(false);
 
   useEffect(() => {
@@ -46,8 +47,36 @@ const Menu = () => {
 
   // Grouper les plats par catégorie
   const platsFiltres = restaurant.plats || [];
+  
+  // Extraire les catégories cuisine uniques
+  const categoriesCuisineUniques = [...new Set(
+    platsFiltres
+      .filter(p => p.categorieCuisine)
+      .flatMap(p => {
+        const cuisines = typeof p.categorieCuisine === 'string'
+          ? p.categorieCuisine.split(',').map(c => c.trim())
+          : Array.isArray(p.categorieCuisine)
+            ? p.categorieCuisine
+            : [];
+        return cuisines;
+      })
+  )].sort();
+  
+  // Filtrer par catégorie cuisine ET catégorie menu
+  const platsFiltresTous = platsFiltres.filter(p => {
+    if (!categorieCuisineActive) return true;
+    
+    const cuisines = typeof p.categorieCuisine === 'string'
+      ? p.categorieCuisine.split(',').map(c => c.trim())
+      : Array.isArray(p.categorieCuisine)
+        ? p.categorieCuisine
+        : [];
+    
+    return cuisines.includes(categorieCuisineActive);
+  });
+  
   const platsParCategorie = categoriesOrdre.reduce((acc, cat) => {
-    const plats = platsFiltres.filter(p => p.categorie === cat);
+    const plats = platsFiltresTous.filter(p => p.categorie === cat);
     if (plats.length > 0) acc[cat] = plats;
     return acc;
   }, {});
@@ -145,6 +174,35 @@ const Menu = () => {
                               }`}
                 >
                   {cat}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Filtres catégories cuisine */}
+          {categoriesCuisineUniques.length > 0 && (
+            <div className="flex gap-2 flex-wrap mb-6">
+              <button
+                onClick={() => setCategorieCuisineActive('')}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all
+                            ${!categorieCuisineActive
+                              ? 'bg-orange-600 text-white border-orange-600'
+                              : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300'
+                            }`}
+              >
+                Tous les styles
+              </button>
+              {categoriesCuisineUniques.map(cuisine => (
+                <button
+                  key={cuisine}
+                  onClick={() => setCategorieCuisineActive(cuisine)}
+                  className={`px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all capitalize
+                              ${categorieCuisineActive === cuisine
+                                ? 'bg-orange-600 text-white border-orange-600'
+                                : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300'
+                              }`}
+                >
+                  {cuisine}
                 </button>
               ))}
             </div>

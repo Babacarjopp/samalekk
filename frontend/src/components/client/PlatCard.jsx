@@ -49,7 +49,11 @@ const PlatCard = ({ plat, restaurant, estOuvert }) => {
 
         {plat.categorieCuisine && (
           <p className="text-[11px] font-semibold uppercase tracking-wide text-orange-600 mb-2">
-            {plat.categorieCuisine}
+            {typeof plat.categorieCuisine === 'string'
+              ? plat.categorieCuisine.split(',').join(' • ')
+              : Array.isArray(plat.categorieCuisine)
+                ? plat.categorieCuisine.join(' • ')
+                : plat.categorieCuisine}
           </p>
         )}
 

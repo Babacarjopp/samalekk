@@ -44,13 +44,19 @@ const GestionMenu = () => {
   };
 
   const ouvrirModification = (plat) => {
+    const cuisineArray = plat.categorieCuisine
+      ? (typeof plat.categorieCuisine === 'string'
+          ? plat.categorieCuisine.split(',').filter(Boolean)
+          : plat.categorieCuisine)
+      : [];
+    
     setPlatSelectionne(plat);
     setForm({
       nom:         plat.nom,
       description: plat.description || '',
       prix:        plat.prix,
       categorie:   plat.categorie,
-      categorieCuisine: plat.categorieCuisine || '',
+      categorieCuisine: cuisineArray,
       stock:       plat.stock ?? 100,
       image:       null
     });
@@ -58,12 +64,16 @@ const GestionMenu = () => {
     setModalOuvert(true);
   };
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setForm(prev => ({
-      ...prev,
-      [name]: files ? files[0] : value
-    }));
+  const handleCategorieChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+    setErreur('');
+  };
+
+  const handleCategorieCuisineChange = (e) => {
+    const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+    setForm({ ...form, categorieCuisine: selected });
+    setErreur('');
   };
 
   const handleSubmit = async (e) => {
@@ -303,15 +313,16 @@ const GestionMenu = () => {
             <select
               name="categorieCuisine"
               value={form.categorieCuisine}
-              onChange={handleChange}
+              onChange={handleCategorieCuisineChange}
+              multiple
+              size="4"
               className="champ"
             >
-              <option value="">Aucune</option>
               {categoriesCuisine.map(c => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
-            <p className="text-gray-400 text-xs mt-1">Ex. grillades, fast-food, sénégalaise.</p>
+            <p className="text-gray-400 text-xs mt-1">Sélectionnez une ou plusieurs catégories. Ctrl+Clic pour sélectionner plusieurs.</p>
           </div>
 
           <div>
