@@ -10,7 +10,7 @@ const categories = ['plat principal', 'entrée', 'accompagnement', 'dessert', 'b
 const categoriesCuisine = ['sénégalaise', 'grillades', 'fast-food', 'sandwicherie', 'pâtisserie', 'autre'];
 const IMAGE_DEFAUT = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80';
 
-const formVide = { nom: '', description: '', prix: '', categorie: 'plat principal', categorieCuisine: '', stock: '100', image: null };
+const formVide = { nom: '', description: '', prix: '', categorie: 'plat principal', categorieCuisine: [], stock: '100', image: null };
 
 const GestionMenu = () => {
   const [restaurant, setRestaurant]   = useState(null);
@@ -70,6 +70,15 @@ const GestionMenu = () => {
     setErreur('');
   };
 
+  const handleChange = (e) => {
+    const { name, type, value, files } = e.target;
+    setForm({
+      ...form,
+      [name]: type === 'file' ? files[0] : value
+    });
+    setErreur('');
+  };
+
   const handleCategorieCuisineChange = (e) => {
     const selected = Array.from(e.target.selectedOptions, (option) => option.value);
     setForm({ ...form, categorieCuisine: selected });
@@ -90,7 +99,7 @@ const GestionMenu = () => {
       formData.append('description', form.description);
       formData.append('prix',        form.prix);
       formData.append('categorie',   form.categorie);
-      formData.append('categorieCuisine', form.categorieCuisine);
+      formData.append('categorieCuisine', Array.isArray(form.categorieCuisine) ? form.categorieCuisine.join(',') : form.categorieCuisine);
       formData.append('stock',       form.stock);
       if (form.image) formData.append('image', form.image);
 
