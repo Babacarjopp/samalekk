@@ -16,14 +16,7 @@ const Restaurant = sequelize.define('Restaurant', {
     allowNull: true
   },
   categorie: {
-    type: DataTypes.ENUM(
-      'sénégalaise',
-      'fast-food',
-      'grillades',
-      'sandwicherie',
-      'pâtisserie',
-      'autre'
-    ),
+    type: DataTypes.STRING(255),
     defaultValue: 'sénégalaise'
   },
   adresse: {

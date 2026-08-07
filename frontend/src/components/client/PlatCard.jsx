@@ -47,6 +47,12 @@ const PlatCard = ({ plat, restaurant, estOuvert }) => {
           <p className="text-gray-500 text-xs mb-2 line-clamp-2">{plat.description}</p>
         )}
 
+        {plat.categorieCuisine && (
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-orange-600 mb-2">
+            {plat.categorieCuisine}
+          </p>
+        )}
+
         <div className="flex items-center justify-between mt-auto pt-1">
           <div>
             <span className="font-bold text-orange-600 text-sm">

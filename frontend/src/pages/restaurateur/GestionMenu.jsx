@@ -7,9 +7,10 @@ import Loader from '../../components/common/Loader';
 import api from '../../services/api';
 
 const categories = ['plat principal', 'entrée', 'accompagnement', 'dessert', 'boisson'];
+const categoriesCuisine = ['sénégalaise', 'grillades', 'fast-food', 'sandwicherie', 'pâtisserie', 'autre'];
 const IMAGE_DEFAUT = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80';
 
-const formVide = { nom: '', description: '', prix: '', categorie: 'plat principal', stock: '100', image: null };
+const formVide = { nom: '', description: '', prix: '', categorie: 'plat principal', categorieCuisine: '', stock: '100', image: null };
 
 const GestionMenu = () => {
   const [restaurant, setRestaurant]   = useState(null);
@@ -49,6 +50,7 @@ const GestionMenu = () => {
       description: plat.description || '',
       prix:        plat.prix,
       categorie:   plat.categorie,
+      categorieCuisine: plat.categorieCuisine || '',
       stock:       plat.stock ?? 100,
       image:       null
     });
@@ -78,6 +80,7 @@ const GestionMenu = () => {
       formData.append('description', form.description);
       formData.append('prix',        form.prix);
       formData.append('categorie',   form.categorie);
+      formData.append('categorieCuisine', form.categorieCuisine);
       formData.append('stock',       form.stock);
       if (form.image) formData.append('image', form.image);
 
@@ -278,7 +281,7 @@ const GestionMenu = () => {
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Catégorie
+                Catégorie du menu
               </label>
               <select
                 name="categorie"
@@ -291,6 +294,24 @@ const GestionMenu = () => {
                 ))}
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Catégorie cuisine
+            </label>
+            <select
+              name="categorieCuisine"
+              value={form.categorieCuisine}
+              onChange={handleChange}
+              className="champ"
+            >
+              <option value="">Aucune</option>
+              {categoriesCuisine.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <p className="text-gray-400 text-xs mt-1">Ex. grillades, fast-food, sénégalaise.</p>
           </div>
 
           <div>

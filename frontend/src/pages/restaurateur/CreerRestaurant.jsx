@@ -24,7 +24,7 @@ const CreerRestaurant = () => {
   const [form, setForm] = useState({
     nom: '',
     description: '',
-    categorie: 'sénégalaise',
+    categorie: ['sénégalaise'],
     adresse: '',
     telephone: utilisateur?.telephone || '',
     heureOuverture: '08:00',
@@ -46,7 +46,14 @@ const CreerRestaurant = () => {
   }, []);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+    setErreur('');
+  };
+
+  const handleCategorieChange = (e) => {
+    const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+    setForm({ ...form, categorie: selected });
     setErreur('');
   };
 
@@ -137,19 +144,22 @@ const CreerRestaurant = () => {
 
           <div className="g2">
             <div className="field">
-              <label className="field-label" htmlFor="categorie">Catégorie</label>
+              <label className="field-label" htmlFor="categorie">Catégories</label>
               <select
                 id="categorie"
                 name="categorie"
                 className="input input-select"
                 value={form.categorie}
-                onChange={handleChange}
+                onChange={handleCategorieChange}
+                multiple
+                size="5"
                 required
               >
                 {categories.map((cat) => (
                   <option key={cat.valeur} value={cat.valeur}>{cat.label}</option>
                 ))}
               </select>
+              <p className="text-xs text-gray-500 mt-2">Sélectionnez une ou plusieurs catégories.</p>
             </div>
 
             <div className="field">

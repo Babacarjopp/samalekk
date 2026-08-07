@@ -34,6 +34,10 @@ const Plat = sequelize.define('Plat', {
     ),
     defaultValue: 'plat principal'
   },
+  categorieCuisine: {
+    type: DataTypes.STRING(100),
+    allowNull: true
+  },
   // soft delete : on désactive le plat sans le supprimer
   // pour garder l'historique des commandes
   disponible: {

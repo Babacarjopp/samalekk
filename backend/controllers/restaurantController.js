@@ -1,5 +1,6 @@
 const { Restaurant, Plat, Utilisateur } = require('../models/index');
 const { Op } = require('sequelize');
+const { normaliserCategories, serialiserCategories } = require('../utils/categorieUtils');
 
 // ─── TOUS LES RESTAURANTS (public) ─────────────────────────────────────────
 const obtenirRestaurants = async (req, res) => {
@@ -9,7 +10,13 @@ const obtenirRestaurants = async (req, res) => {
     const conditions = { statut: 'valide', estOuvert: true };
 
     // Filtrer par catégorie si demandé
-    if (categorie) conditions.categorie = categorie;
+    if (categorie) {
+      const categories = normaliserCategories(categorie);
+      if (categories.length > 0) {
+        const whereClause = categories.map((value) => ({ categorie: { [Op.like]: `%${value}%` } }));
+        conditions[Op.or] = whereClause;
+      }
+    }
 
     // Recherche par nom
     if (recherche) {
@@ -45,7 +52,7 @@ const obtenirRestaurant = async (req, res) => {
           as: 'plats',
           where: { disponible: true },
           required: false,
-          attributes: ['id', 'nom', 'description', 'prix', 'image', 'categorie', 'stock']
+          attributes: ['id', 'nom', 'description', 'prix', 'image', 'categorie', 'categorieCuisine', 'stock']
         },
         {
           model: Utilisateur,
@@ -69,6 +76,7 @@ const obtenirRestaurant = async (req, res) => {
 const creerRestaurant = async (req, res) => {
   try {
     const { nom, description, categorie, adresse, telephone, heureOuverture, heureFermeture } = req.body;
+    const categoriesValue = serialiserCategories(categorie);
 
     // Vérifier que ce restaurateur n'a pas déjà un restaurant
     const existant = await Restaurant.findOne({
@@ -92,7 +100,7 @@ const creerRestaurant = async (req, res) => {
     const restaurant = await Restaurant.create({
       nom,
       description,
-      categorie,
+      categorie: categoriesValue,
       adresse,
       telephone,
       heureOuverture,
@@ -123,7 +131,8 @@ const modifierRestaurant = async (req, res) => {
       return res.status(404).json({ message: 'Restaurant introuvable.' });
     }
 
-    const { nom, description, adresse, telephone, estOuvert, heureOuverture, heureFermeture } = req.body;
+    const { nom, description, adresse, telephone, estOuvert, heureOuverture, heureFermeture, categorie } = req.body;
+    const categoriesValue = serialiserCategories(categorie);
     let image = req.file
       ? (req.file.path || req.file.secure_url || req.file.url || restaurant.image)
       : restaurant.image;
@@ -135,6 +144,7 @@ const modifierRestaurant = async (req, res) => {
     await restaurant.update({
       nom, description, adresse,
       telephone, estOuvert,
+      categorie: categoriesValue,
       heureOuverture, heureFermeture, image
     });
 

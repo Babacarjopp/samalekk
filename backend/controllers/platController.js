@@ -3,7 +3,7 @@ const { Plat, Restaurant } = require('../models/index');
 // ─── AJOUTER UN PLAT ────────────────────────────────────────────────────────
 const ajouterPlat = async (req, res) => {
   try {
-    const { nom, description, prix, categorie, stock } = req.body;
+    const { nom, description, prix, categorie, categorieCuisine, stock } = req.body;
 
     // Récupérer le restaurant du restaurateur connecté
     const restaurant = await Restaurant.findOne({
@@ -31,6 +31,7 @@ const ajouterPlat = async (req, res) => {
       description,
       prix: parseInt(prix),
       categorie,
+      categorieCuisine: categorieCuisine || null,
       stock: stock !== undefined ? Math.max(0, parseInt(stock, 10) || 0) : 100,
       image,
       restaurantId: restaurant.id
@@ -62,7 +63,7 @@ const modifierPlat = async (req, res) => {
       return res.status(403).json({ message: 'Action non autorisée.' });
     }
 
-    const { nom, description, prix, categorie, disponible, stock } = req.body;
+    const { nom, description, prix, categorie, categorieCuisine, disponible, stock } = req.body;
     let image = req.file
       ? (req.file.path || req.file.secure_url || req.file.url || plat.image)
       : plat.image;
@@ -76,6 +77,7 @@ const modifierPlat = async (req, res) => {
       description: description || plat.description,
       prix:        prix        ? parseInt(prix) : plat.prix,
       categorie:   categorie   || plat.categorie,
+      categorieCuisine: categorieCuisine !== undefined ? categorieCuisine : plat.categorieCuisine,
       disponible:  disponible !== undefined ? disponible : plat.disponible,
       stock:       stock !== undefined ? Math.max(0, parseInt(stock, 10) || 0) : plat.stock,
       image
