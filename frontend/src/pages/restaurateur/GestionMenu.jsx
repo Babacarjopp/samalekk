@@ -319,19 +319,31 @@ const GestionMenu = () => {
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Catégorie cuisine
             </label>
-            <select
-              name="categorieCuisine"
-              value={form.categorieCuisine}
-              onChange={handleCategorieCuisineChange}
-              multiple
-              size="4"
-              className="champ"
-            >
-              {categoriesCuisine.map(c => (
-                <option key={c} value={c}>{c}</option>
+            <div className="space-y-2 p-3 border border-gray-200 rounded-lg bg-gray-50">
+              {categoriesCuisine.map(cuisine => (
+                <label key={cuisine} className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    value={cuisine}
+                    checked={form.categorieCuisine.includes(cuisine)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const isChecked = e.target.checked;
+                      setForm({
+                        ...form,
+                        categorieCuisine: isChecked
+                          ? [...form.categorieCuisine, value]
+                          : form.categorieCuisine.filter(c => c !== value)
+                      });
+                      setErreur('');
+                    }}
+                    className="w-4 h-4 rounded border-gray-300 text-orange-600 cursor-pointer"
+                  />
+                  <span className="text-sm text-gray-700 capitalize">{cuisine}</span>
+                </label>
               ))}
-            </select>
-            <p className="text-gray-400 text-xs mt-1">Sélectionnez une ou plusieurs catégories. Ctrl+Clic pour sélectionner plusieurs.</p>
+            </div>
+            <p className="text-gray-400 text-xs mt-2">Sélectionnez une ou plusieurs catégories.</p>
           </div>
 
           <div>
