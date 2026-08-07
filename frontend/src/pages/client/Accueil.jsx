@@ -21,24 +21,16 @@ const Accueil = () => {
 
         {/* Liste directe des categories - pas de grid parfait */}
         <div className="mb-12">
-          <h2 className="text-xl font-semibold text-[#2A2420] mb-6">Ce qu'on peut manger</h2>
-          <div className="flex flex-wrap gap-3">
-            <Link to="/restaurants?categorie=plats sénégalais" className="px-4 py-2 bg-[#F4EDE4] border border-[#D0C8C0] text-[#4A4440] hover:bg-[#EBE4DC]">
-              Plats sénégalais
-            </Link>
-            <Link to="/restaurants?categorie=grillades" className="px-4 py-2 bg-[#F4EDE4] border border-[#D0C8C0] text-[#4A4440] hover:bg-[#EBE4DC]">
-              Grillades
-            </Link>
-            <Link to="/restaurants?categorie=burgers" className="px-4 py-2 bg-[#F4EDE4] border border-[#D0C8C0] text-[#4A4440] hover:bg-[#EBE4DC]">
-              Burgers
-            </Link>
-            <Link to="/restaurants?categorie=sandwichs" className="px-4 py-2 bg-[#F4EDE4] border border-[#D0C8C0] text-[#4A4440] hover:bg-[#EBE4DC]">
-              Sandwichs
-            </Link>
-            <Link to="/restaurants?categorie=desserts" className="px-4 py-2 bg-[#F4EDE4] border border-[#D0C8C0] text-[#4A4440] hover:bg-[#EBE4DC]">
-              Desserts
-            </Link>
-          </div>
+          <h2 className="text-xl font-semibold text-[#2A2420] mb-6">À explorer</h2>
+          <p className="text-[#4A4440] mb-6">
+            Parcourez notre sélection de restaurants et découvrez les différents styles de cuisine proposés par chacun.
+          </p>
+          <Link 
+            to="/restaurants" 
+            className="inline-block px-6 py-3 bg-[#8B5A2B] text-white border-2 border-[#6B4423] hover:bg-[#6B4423]"
+          >
+            Voir tous les restaurants
+          </Link>
         </div>
 
         {/* Section restaurants - layout simple */}
@@ -52,12 +44,6 @@ const Accueil = () => {
           <p className="text-[#4A4440] mb-6">
             Il y a plus de 120 restaurants sur Touba qui livrent avec nous.
           </p>
-          <Link 
-            to="/restaurants" 
-            className="inline-block px-6 py-3 bg-[#8B5A2B] text-white border-2 border-[#6B4423] hover:bg-[#6B4423]"
-          >
-            Choisir un resto
-          </Link>
         </div>
 
         {/* Section restaurateur - texte brut */}

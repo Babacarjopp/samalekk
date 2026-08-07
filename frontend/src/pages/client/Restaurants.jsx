@@ -1,35 +1,22 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { restaurantService } from '../../services/restaurantService';
 import RestaurantCard from '../../components/client/RestaurantCard';
 import Loader from '../../components/common/Loader';
 
-const categories = [
-  { valeur: '',             label: 'Tous',         icone: 'ti ti-restaurant' },
-  { valeur: 'sénégalaise',  label: 'Sénégalaise',  icone: 'ti ti-bowl-chopsticks' },
-  { valeur: 'grillades',    label: 'Grillades',     icone: 'ti ti-flame' },
-  { valeur: 'fast-food',    label: 'Fast-food',     icone: 'ti ti-burger' },
-  { valeur: 'sandwicherie', label: 'Sandwicherie',  icone: 'ti ti-bread' },
-  { valeur: 'pâtisserie',   label: 'Pâtisserie',    icone: 'ti ti-cake' },
-];
-
 const Restaurants = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
   const [restaurants, setRestaurants]   = useState([]);
   const [chargement,  setChargement]    = useState(true);
   const [recherche,   setRecherche]     = useState('');
-  const categorieActive = searchParams.get('categorie') || '';
 
   useEffect(() => {
     chargerRestaurants();
-  }, [categorieActive]);
+  }, [recherche]);
 
   const chargerRestaurants = async () => {
     setChargement(true);
     try {
       const params = {};
-      if (categorieActive) params.categorie = categorieActive;
-      if (recherche)        params.recherche = recherche;
+      if (recherche) params.recherche = recherche;
       const res = await restaurantService.obtenirTous(params);
       setRestaurants(res.data.restaurants);
     } catch (err) {
@@ -42,11 +29,6 @@ const Restaurants = () => {
   const handleRecherche = (e) => {
     e.preventDefault();
     chargerRestaurants();
-  };
-
-  const changerCategorie = (valeur) => {
-    if (valeur) setSearchParams({ categorie: valeur });
-    else        setSearchParams({});
   };
 
   return (
@@ -63,7 +45,7 @@ const Restaurants = () => {
       </div>
 
       {/* Barre de recherche */}
-      <form onSubmit={handleRecherche} className="mb-6">
+      <form onSubmit={handleRecherche} className="mb-8">
         <div className="flex gap-3">
           <div className="flex-1 relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
@@ -82,25 +64,6 @@ const Restaurants = () => {
           </button>
         </div>
       </form>
-
-      {/* Filtres catégories */}
-      <div className="flex gap-2 flex-wrap mb-8">
-        {categories.map(cat => (
-          <button
-            key={cat.valeur}
-            onClick={() => changerCategorie(cat.valeur)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold
-                        transition-all duration-200 border-2
-                        ${categorieActive === cat.valeur
-                          ? 'bg-orange-600 text-white border-orange-600 shadow-md'
-                          : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300'
-                        }`}
-          >
-           <i className={`${cat.icone} text-base`} />
-           <span>{cat.label}</span>
-          </button>
-        ))}
-      </div>
 
       {/* Liste restaurants */}
       {chargement ? (
