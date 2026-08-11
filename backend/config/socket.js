@@ -100,6 +100,30 @@ const configureSocket = (io) => {
       }
     });
 
+    socket.on('livreur:suivre', async (livraisonId) => {
+      if (socket.utilisateur.role !== 'livreur') {
+        socket.emit('erreur', { message: 'Accès réservé aux livreurs.' });
+        return;
+      }
+
+      try {
+        const livraison = await Livraison.findOne({
+          where: { id: livraisonId, livreurId: socket.utilisateur.id }
+        });
+
+        if (!livraison) {
+          socket.emit('erreur', { message: 'Accès refusé à cette livraison.' });
+          return;
+        }
+
+        socket.join(`livraison:${livraisonId}`);
+        console.log(`🛵 Livreur suit la livraison ${livraisonId}`);
+      } catch (err) {
+        console.error('❌ Erreur suivi livreur :', err.message);
+        socket.emit('erreur', { message: 'Impossible de rejoindre le suivi.' });
+      }
+    });
+
     socket.on('disconnect', () => {
       for (const [livreurId, socketId] of Object.entries(livreursConnectes)) {
         if (socketId === socket.id) {

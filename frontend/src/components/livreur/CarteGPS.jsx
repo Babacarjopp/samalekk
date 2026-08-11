@@ -25,6 +25,7 @@ const creerIcone = (iconClass, couleur) =>
 
 const iconeLivreur = creerIcone('ti ti-truck-delivery', '#C8441A');
 const iconeClient  = creerIcone('ti ti-home', '#1A6B3C');
+const iconeRestaurant = creerIcone('ti ti-utensils', '#ED8936');
 
 const AjusterVue = ({ positions }) => {
   const map = useMap();
@@ -49,10 +50,12 @@ const AjusterVue = ({ positions }) => {
 const CarteGPS = ({
   positionLivreur = null,
   positionClient  = null,
+  positionRestaurant = null,
   nomLivreur      = 'Livreur',
+  nomRestaurant   = 'Restaurant',
   hauteur         = '250px',
 }) => {
-  const positions = [positionLivreur, positionClient].filter(
+  const positions = [positionLivreur, positionClient, positionRestaurant].filter(
     p => p?.lat != null && p?.lng != null
   );
 
@@ -76,7 +79,16 @@ const CarteGPS = ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        <AjusterVue positions={[positionLivreur, positionClient]} />
+        <AjusterVue positions={[positionLivreur, positionClient, positionRestaurant]} />
+
+        {positionRestaurant?.lat != null && positionRestaurant?.lng != null && (
+          <Marker
+            position={[positionRestaurant.lat, positionRestaurant.lng]}
+            icon={iconeRestaurant}
+          >
+            <Popup>{nomRestaurant} — Récupérer ici</Popup>
+          </Marker>
+        )}
 
         {positionLivreur?.lat != null && positionLivreur?.lng != null && (
           <Marker
@@ -92,7 +104,7 @@ const CarteGPS = ({
             position={[positionClient.lat, positionClient.lng]}
             icon={iconeClient}
           >
-            <Popup>Votre adresse de livraison</Popup>
+            <Popup>Adresse de livraison</Popup>
           </Marker>
         )}
       </MapContainer>

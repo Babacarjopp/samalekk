@@ -4,6 +4,7 @@ import { PanierProvider } from './context/PanierContext';
 import PrivateRoute from './routes/PrivateRoute';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
+import NotificationCenter from './components/common/NotificationCenter';
  
 // Pages Auth
 import Login    from './pages/auth/Login';
@@ -50,7 +51,8 @@ const App = () => {
   return (
     <BrowserRouter>       
       <AuthProvider>
-        <PanierProvider>       
+        <PanierProvider>
+          <NotificationCenter />
           <Routes>
 
             {/* ── Pages publiques ── */}

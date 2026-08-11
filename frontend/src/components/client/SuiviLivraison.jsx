@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { livraisonService } from '../../services/livraisonService';
 import useSocket from '../../hooks/useSocket';
 import CarteGPS from '../livreur/CarteGPS';
@@ -14,7 +14,9 @@ const statutsEtapes = [
 const SuiviLivraison = ({ livraisonId, positionClient }) => {
   const [livraison,       setLivraison]       = useState(null);
   const [positionLivreur, setPositionLivreur] = useState(null);
+  const [maPosition,      setMaPosition]      = useState(null);
   const { connecte, rejoindre, ecouter }      = useSocket();
+  const watchRef = useRef(null);
 
   useEffect(() => {
     if (!livraisonId) return;
@@ -34,12 +36,32 @@ const SuiviLivraison = ({ livraisonId, positionClient }) => {
       rejoindre(livraisonId);
     }
 
-    // Écouter les mises à jour de position GPS
+    // Écouter les mises à jour de position GPS du livreur
     const desecouter = ecouter('livreur:position:update', (data) => {
       setPositionLivreur({ lat: data.lat, lng: data.lng });
     });
 
-    return desecouter;
+    // Démarrer le suivi GPS du client et envoyer la position toutes les 5 secondes
+    if (navigator.geolocation) {
+      watchRef.current = navigator.geolocation.watchPosition(
+        async (pos) => {
+          const { latitude: lat, longitude: lng } = pos.coords;
+          setMaPosition({ lat, lng });
+          try {
+            await livraisonService.mettreAJourPositionClient({ lat, lng, livraisonId });
+          } catch (err) {
+            console.error('Erreur position GPS client :', err);
+          }
+        },
+        (err) => console.warn('GPS indisponible :', err),
+        { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+      );
+    }
+
+    return () => {
+      desecouter();
+      if (watchRef.current) navigator.geolocation.clearWatch(watchRef.current);
+    };
   }, [livraisonId, connecte, rejoindre, ecouter]);
 
   if (!livraison) return null;

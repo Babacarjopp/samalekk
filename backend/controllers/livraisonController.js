@@ -251,6 +251,39 @@ const missionLivreur = async (req, res) => {
   }
 };
 
+// ─── METTRE À JOUR POSITION GPS CLIENT (client) ─────────────────────────────
+const mettreAJourPositionClient = async (req, res) => {
+  try {
+    const { lat, lng, livraisonId } = req.body;
+
+    // Mettre à jour la position du client dans la table utilisateurs
+    await Utilisateur.update(
+      { latitude: lat, longitude: lng },
+      { where: { id: req.utilisateur.id } }
+    );
+
+    // Diffuser la position via Socket.io au livreur concerné
+    const livraison = await Livraison.findOne({
+      where: { id: livraisonId, livreurId: { [require('sequelize').Op.ne]: null } }
+    });
+
+    if (livraison) {
+      const io = req.app.get('io');
+      io.to(`livraison:${livraisonId}`).emit('client:position:update', {
+        lat,
+        lng,
+        livraisonId,
+        clientId: req.utilisateur.id,
+        timestamp: new Date()
+      });
+    }
+
+    res.json({ message: 'Position mise à jour.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de la mise à jour de la position.' });
+  }
+};
+
 module.exports = {
   missionsDisponibles,
   accepterMission,
@@ -258,5 +291,6 @@ module.exports = {
   confirmerLivraison,
   mettreAJourPosition,
   suivreLivraison,
-  missionLivreur
+  missionLivreur,
+  mettreAJourPositionClient
 };

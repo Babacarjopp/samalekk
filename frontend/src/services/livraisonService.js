@@ -6,6 +6,7 @@ export const livraisonService = {
   confirmerRecup:      (id)  => api.put(`/livraisons/${id}/recuperer`),
   confirmerLivraison:  (id)  => api.put(`/livraisons/${id}/livrer`),
   mettreAJourPosition: (data)=> api.post('/livraisons/position', data),
+  mettreAJourPositionClient: (data)=> api.post('/livraisons/position/client', data),
   suivreLivraison:     (id)  => api.get(`/livraisons/${id}/suivi`),
   missionLivreur:      (id)  => api.get(`/livraisons/${id}/mission`),
 };

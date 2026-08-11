@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import useSocket from '../../hooks/useSocket';
 import Button from '../../components/common/Button';
 import Loader from '../../components/common/Loader';
+import CarteGPS from '../../components/livreur/CarteGPS';
 
 const etapesStatut = {
   acceptee:  { label: 'Mission acceptée',              num: 1 },
@@ -16,21 +17,36 @@ const Mission = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { utilisateur } = useAuth();
-  const { connecte, emettre } = useSocket();
+  const { connecte, emettre, ecouter } = useSocket();
 
   const [livraison,   setLivraison]   = useState(null);
   const [chargement,  setChargement]  = useState(true);
   const [envoi,       setEnvoi]       = useState(false);
   const [position,    setPosition]    = useState(null);
+  const [positionClient, setPositionClient] = useState(null);
   const watchRef = useRef(null);
 
   useEffect(() => {
     chargerLivraison();
     demarrerGPS();
+
+    // Rejoindre la salle de livraison pour recevoir les mises à jour du client
+    if (connecte) {
+      emettre('livreur:suivre', id);
+    }
+
+    // Écouter les mises à jour de position GPS du client
+    const desecouterClient = ecouter('client:position:update', (data) => {
+      if (data.livraisonId === id) {
+        setPositionClient({ lat: data.lat, lng: data.lng });
+      }
+    });
+
     return () => {
       if (watchRef.current) navigator.geolocation.clearWatch(watchRef.current);
+      desecouterClient();
     };
-  }, []);
+  }, [id, connecte, emettre, ecouter]);
 
   useEffect(() => {
     if (!connecte || !utilisateur?.id) return;
@@ -152,6 +168,36 @@ const Mission = () => {
               </p>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Carte avec position du livreur, restaurant et client */}
+      {position && (positionClient || (commande?.latitudeLivraison && commande?.longitudeLivraison)) && (
+        <div className="mb-6">
+          <CarteGPS
+            positionLivreur={{
+              lat: position.lat,
+              lng: position.lng
+            }}
+            positionRestaurant={
+              commande?.restaurant?.latitude && commande?.restaurant?.longitude
+                ? {
+                    lat: parseFloat(commande.restaurant.latitude),
+                    lng: parseFloat(commande.restaurant.longitude)
+                  }
+                : null
+            }
+            positionClient={positionClient || {
+              lat: parseFloat(commande.latitudeLivraison),
+              lng: parseFloat(commande.longitudeLivraison)
+            }}
+            nomLivreur={utilisateur?.nom || 'Vous'}
+            nomRestaurant={commande?.restaurant?.nom || 'Restaurant'}
+            hauteur="300px"
+          />
+          <p className="text-gray-400 text-xs mt-2 text-center">
+            🔴 Vous — 🟠 Restaurant — 🟢 Client {positionClient && '(en direct)'}
+          </p>
         </div>
       )}
 

@@ -7,7 +7,8 @@ const {
   confirmerLivraison,
   mettreAJourPosition,
   suivreLivraison,
-  missionLivreur
+  missionLivreur,
+  mettreAJourPositionClient
 } = require('../controllers/livraisonController');
 const { verifierToken }  = require('../middlewares/authMiddleware');
 const { autoriserRoles } = require('../middlewares/roleMiddleware');
@@ -35,5 +36,8 @@ router.get('/:id/mission',
 // Client
 router.get('/:id/suivi',
   verifierToken, autoriserRoles('client'), suivreLivraison);
+
+router.post('/position/client',
+  verifierToken, autoriserRoles('client'), mettreAJourPositionClient);
 
 module.exports = router;
