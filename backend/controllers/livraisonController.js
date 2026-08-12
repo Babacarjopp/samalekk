@@ -1,5 +1,6 @@
 const { Livraison, Commande, Utilisateur, Restaurant } = require('../models/index');
 const { envoyerNotification } = require('../utils/sendNotification');
+const { Op } = require('sequelize');
 
 // ─── MISSIONS DISPONIBLES (livreur) ─────────────────────────────────────────
 const missionsDisponibles = async (req, res) => {
@@ -10,9 +11,22 @@ const missionsDisponibles = async (req, res) => {
         {
           model: Commande,
           as: 'commande',
+          attributes: [
+            'id', 'statut', 'adresseLivraison',
+            'latitudeLivraison', 'longitudeLivraison',
+            'montantTotal', 'fraisLivraison', 'modePaiement', 'clientId'
+          ],
           include: [
-            { model: Restaurant,  as: 'restaurant', attributes: ['nom', 'adresse', 'latitude', 'longitude'] },
-            { model: Utilisateur, as: 'client',     attributes: ['nom', 'telephone'] }
+            {
+              model: Restaurant,
+              as: 'restaurant',
+              attributes: ['nom', 'adresse', 'latitude', 'longitude', 'telephone']
+            },
+            {
+              model: Utilisateur,
+              as: 'client',
+              attributes: ['nom', 'telephone']
+            }
           ]
         }
       ],
@@ -21,6 +35,7 @@ const missionsDisponibles = async (req, res) => {
 
     res.json({ livraisons });
   } catch (error) {
+    console.error('❌ missionsDisponibles:', error.message);
     res.status(500).json({ message: 'Erreur lors de la récupération des missions.' });
   }
 };
@@ -36,7 +51,7 @@ const accepterMission = async (req, res) => {
           as: 'commande',
           include: [
             { model: Restaurant,  as: 'restaurant' },
-            { model: Utilisateur, as: 'client', attributes: ['nom'] }
+            { model: Utilisateur, as: 'client', attributes: ['nom', 'telephone'] }
           ]
         }
       ]
@@ -44,35 +59,30 @@ const accepterMission = async (req, res) => {
 
     if (!livraison) {
       return res.status(404).json({
-        message: 'Mission introuvable ou déjà assignée.'
+        message: 'Mission introuvable ou déjà assignée à un autre livreur.'
       });
     }
 
-    // Vérifier que le livreur est disponible
     const livreur = await Utilisateur.findByPk(req.utilisateur.id);
     if (!livreur.disponible) {
       return res.status(400).json({
-        message: 'Vous avez déjà une mission en cours.'
+        message: 'Vous avez déjà une mission en cours. Terminez-la avant d\'en accepter une autre.'
       });
     }
 
-    // Assigner le livreur et démarrer la livraison
     await livraison.update({
       livreurId: req.utilisateur.id,
       statut:    'acceptee',
       dateDebut: new Date()
     });
 
-    // Marquer le livreur comme non disponible
     await livreur.update({ disponible: false });
 
-    // Mettre à jour la commande
     await Commande.update(
       { statut: 'en_livraison' },
       { where: { id: livraison.commandeId } }
     );
 
-    // Notifier le client
     const io = req.app.get('io');
     await envoyerNotification(
       io,
@@ -81,12 +91,10 @@ const accepterMission = async (req, res) => {
       'livraison'
     );
 
-    res.json({
-      message: 'Mission acceptée. Bonne route !',
-      livraison
-    });
+    res.json({ message: 'Mission acceptée. Bonne route !', livraison });
+
   } catch (error) {
-    console.error('❌ Erreur acceptation mission :', error.message);
+    console.error('❌ accepterMission:', error.message);
     res.status(500).json({ message: 'Erreur lors de l\'acceptation de la mission.' });
   }
 };
@@ -100,12 +108,11 @@ const confirmerRecuperation = async (req, res) => {
     });
 
     if (!livraison) {
-      return res.status(404).json({ message: 'Livraison introuvable.' });
+      return res.status(404).json({ message: 'Livraison introuvable ou statut incorrect.' });
     }
 
     await livraison.update({ statut: 'recuperee' });
 
-    // Notifier le client
     const io = req.app.get('io');
     await envoyerNotification(
       io,
@@ -115,8 +122,10 @@ const confirmerRecuperation = async (req, res) => {
     );
 
     res.json({ message: 'Récupération confirmée.', livraison });
+
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la confirmation.' });
+    console.error('❌ confirmerRecuperation:', error.message);
+    res.status(500).json({ message: 'Erreur lors de la confirmation de récupération.' });
   }
 };
 
@@ -132,25 +141,21 @@ const confirmerLivraison = async (req, res) => {
       return res.status(404).json({ message: 'Livraison introuvable.' });
     }
 
-    // Finaliser la livraison
     await livraison.update({
       statut:  'livree',
       dateFin: new Date()
     });
 
-    // Mettre à jour la commande
     await Commande.update(
       { statut: 'livree' },
       { where: { id: livraison.commandeId } }
     );
 
-    // Remettre le livreur disponible
     await Utilisateur.update(
       { disponible: true },
       { where: { id: req.utilisateur.id } }
     );
 
-    // Notifier le client (optionnel selon notre use case)
     const io = req.app.get('io');
     await envoyerNotification(
       io,
@@ -160,30 +165,67 @@ const confirmerLivraison = async (req, res) => {
     );
 
     res.json({ message: 'Livraison confirmée. Merci !', livraison });
+
   } catch (error) {
+    console.error('❌ confirmerLivraison:', error.message);
     res.status(500).json({ message: 'Erreur lors de la confirmation de livraison.' });
   }
 };
 
-// ─── METTRE À JOUR POSITION GPS (livreur) ───────────────────────────────────
+// ─── METTRE À JOUR POSITION GPS LIVREUR ─────────────────────────────────────
 const mettreAJourPosition = async (req, res) => {
   try {
     const { lat, lng, livraisonId } = req.body;
+
+    if (!lat || !lng || !livraisonId) {
+      return res.status(400).json({ message: 'lat, lng et livraisonId sont requis.' });
+    }
 
     await Livraison.update(
       { latActuelle: lat, lngActuelle: lng },
       { where: { id: livraisonId, livreurId: req.utilisateur.id } }
     );
 
-    // Diffuser la position via Socket.io à tous ceux qui suivent cette livraison
+    // Diffuser la position du livreur via Socket.io
     const io = req.app.get('io');
     io.to(`livraison:${livraisonId}`).emit('livreur:position:update', {
-      lat, lng, timestamp: new Date()
+      lat, lng,
+      livreurId:   req.utilisateur.id,
+      livraisonId,
+      timestamp:   new Date()
     });
 
     res.json({ message: 'Position mise à jour.' });
+
   } catch (error) {
+    console.error('❌ mettreAJourPosition:', error.message);
     res.status(500).json({ message: 'Erreur lors de la mise à jour de la position.' });
+  }
+};
+
+// ─── METTRE À JOUR POSITION GPS CLIENT ──────────────────────────────────────
+const mettreAJourPositionClient = async (req, res) => {
+  try {
+    const { lat, lng, livraisonId } = req.body;
+
+    if (!lat || !lng || !livraisonId) {
+      return res.status(400).json({ message: 'lat, lng et livraisonId sont requis.' });
+    }
+
+    // Diffuser la position du client via Socket.io au livreur
+    const io = req.app.get('io');
+    io.to(`livraison:${livraisonId}`).emit('client:position:update', {
+      lat, lng,
+      clientId:    req.utilisateur.id,
+      livraisonId,
+      timestamp:   new Date()
+    });
+
+    res.json({ message: 'Position client mise à jour.' });
+
+  } catch (error) {
+    console.error('❌ mettreAJourPositionClient:', error.message);
+    res.status(500).json({ message: 'Erreur lors de la mise à jour de la position client.' });
   }
 };
 
@@ -196,12 +238,17 @@ const suivreLivraison = async (req, res) => {
         {
           model: Commande,
           as: 'commande',
+          attributes: [
+            'id', 'statut', 'adresseLivraison',
+            'latitudeLivraison', 'longitudeLivraison',
+            'montantTotal', 'modePaiement', 'clientId'
+          ],
           where: { clientId: req.utilisateur.id }
         },
         {
           model: Utilisateur,
           as: 'livreur',
-          attributes: ['nom', 'telephone', 'photo', 'vehicule']
+          attributes: ['nom', 'telephone', 'vehicule']
         }
       ]
     });
@@ -211,26 +258,44 @@ const suivreLivraison = async (req, res) => {
     }
 
     res.json({ livraison });
+
   } catch (error) {
+    console.error('❌ suivreLivraison:', error.message);
     res.status(500).json({ message: 'Erreur lors du suivi.' });
   }
 };
 
-// ─── DETAILS MISSION LIVREUR ────────────────────────────────────────────────
+// ─── DÉTAILS MISSION LIVREUR ─────────────────────────────────────────────────
 const missionLivreur = async (req, res) => {
   try {
     const livraison = await Livraison.findOne({
       where: {
-        id: req.params.id,
+        id:        req.params.id,
         livreurId: req.utilisateur.id
       },
       include: [
         {
           model: Commande,
           as: 'commande',
+          // ✅ CRUCIAL : inclure latitudeLivraison et longitudeLivraison
+          attributes: [
+            'id', 'statut', 'adresseLivraison',
+            'latitudeLivraison', 'longitudeLivraison',
+            'montantTotal', 'fraisLivraison', 'modePaiement', 'clientId'
+          ],
           include: [
-            { model: Restaurant, as: 'restaurant', attributes: ['nom', 'adresse', 'telephone', 'latitude', 'longitude'] },
-            { model: Utilisateur, as: 'client', attributes: ['nom', 'telephone', 'latitude', 'longitude'] }
+            {
+              model: Restaurant,
+              as: 'restaurant',
+              attributes: ['nom', 'adresse', 'telephone', 'latitude', 'longitude']
+            },
+            {
+              model: Utilisateur,
+              as: 'client',
+              // ✅ On prend seulement nom et telephone
+              // La position vient de commande.latitudeLivraison
+              attributes: ['nom', 'telephone']
+            }
           ]
         },
         {
@@ -246,41 +311,10 @@ const missionLivreur = async (req, res) => {
     }
 
     res.json({ livraison });
+
   } catch (error) {
+    console.error('❌ missionLivreur:', error.message);
     res.status(500).json({ message: 'Erreur lors de la récupération de la mission.' });
-  }
-};
-
-// ─── METTRE À JOUR POSITION GPS CLIENT (client) ─────────────────────────────
-const mettreAJourPositionClient = async (req, res) => {
-  try {
-    const { lat, lng, livraisonId } = req.body;
-
-    // Mettre à jour la position du client dans la table utilisateurs
-    await Utilisateur.update(
-      { latitude: lat, longitude: lng },
-      { where: { id: req.utilisateur.id } }
-    );
-
-    // Diffuser la position via Socket.io au livreur concerné
-    const livraison = await Livraison.findOne({
-      where: { id: livraisonId, livreurId: { [require('sequelize').Op.ne]: null } }
-    });
-
-    if (livraison) {
-      const io = req.app.get('io');
-      io.to(`livraison:${livraisonId}`).emit('client:position:update', {
-        lat,
-        lng,
-        livraisonId,
-        clientId: req.utilisateur.id,
-        timestamp: new Date()
-      });
-    }
-
-    res.json({ message: 'Position mise à jour.' });
-  } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la mise à jour de la position.' });
   }
 };
 
@@ -290,7 +324,7 @@ module.exports = {
   confirmerRecuperation,
   confirmerLivraison,
   mettreAJourPosition,
+  mettreAJourPositionClient,
   suivreLivraison,
-  missionLivreur,
-  mettreAJourPositionClient
+  missionLivreur
 };

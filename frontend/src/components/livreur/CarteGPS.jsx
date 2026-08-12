@@ -1,123 +1,202 @@
-import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { useEffect, useRef } from 'react';
 
-const CENTRE_TOUBA = [14.8667, -15.8833];
-
-const creerIcone = (emoji, couleur) =>
-  L.divIcon({
-    className: '',
-    html: `<div style="
-      background:${couleur};
-      width:36px;height:36px;
-      border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      font-size:18px;
-      color:white;
-      border:2px solid white;
-      box-shadow:0 2px 8px rgba(0,0,0,0.25);
-    ">${emoji}</div>`,
-    iconSize:   [36, 36],
-    iconAnchor: [18, 18],
-    popupAnchor:[0, -20],
-  });
-
-const iconeLivreur = creerIcone('🛵', '#C8441A');
-const iconeClient  = creerIcone('🏠', '#1A6B3C');
-const iconeRestaurant = creerIcone('🍽️', '#ED8936');
-
-const AjusterVue = ({ positions }) => {
-  const map = useMap();
-
-  useEffect(() => {
-    const valides = positions.filter(p => p?.lat != null && p?.lng != null);
-    if (valides.length === 0) return;
-
-    if (valides.length === 1) {
-      map.setView([valides[0].lat, valides[0].lng], 15);
-    } else {
-      map.fitBounds(
-        L.latLngBounds(valides.map(p => [p.lat, p.lng])),
-        { padding: [48, 48], maxZoom: 16 }
-      );
-    }
-  }, [positions, map]);
-
-  return null;
-};
+const TOUBA = { lat: 14.8534, lng: -15.8823 };
 
 const CarteGPS = ({
-  positionLivreur = null,
-  positionClient  = null,
+  positionLivreur    = null,
   positionRestaurant = null,
-  nomLivreur      = 'Livreur',
-  nomRestaurant   = 'Restaurant',
-  hauteur         = '250px',
+  positionClient     = null,
+  nomLivreur         = 'Livreur',
+  nomRestaurant      = 'Restaurant',
+  hauteur            = '300px'
 }) => {
-  const positions = [positionLivreur, positionClient, positionRestaurant].filter(
-    p => p?.lat != null && p?.lng != null
-  );
+  const mapRef     = useRef(null);
+  const leafletRef = useRef(null);
+  const markersRef = useRef({});
 
-  const centre = positions.length > 0
-    ? [positions[0].lat, positions[0].lng]
-    : CENTRE_TOUBA;
+  useEffect(() => {
+    chargerLeaflet();
+    return () => {
+      if (leafletRef.current) {
+        leafletRef.current.remove();
+        leafletRef.current = null;
+      }
+    };
+  }, []);
 
-  const aDesPositions = positions.length > 0;
+  useEffect(() => {
+    if (leafletRef.current) {
+      mettreAJourMarkers();
+    }
+  }, [positionLivreur, positionRestaurant, positionClient]);
+
+  const chargerLeaflet = () => {
+    if (!document.getElementById('leaflet-css')) {
+      const link = document.createElement('link');
+      link.id  = 'leaflet-css';
+      link.rel = 'stylesheet';
+      link.href= 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(link);
+    }
+
+    const initCarte = () => {
+      if (!mapRef.current || leafletRef.current) return;
+      const L = window.L;
+
+      const centre = positionClient || positionRestaurant || positionLivreur || TOUBA;
+
+      const map = L.map(mapRef.current, {
+        center:      [centre.lat, centre.lng],
+        zoom:        14,
+        zoomControl: true,
+      });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        maxZoom: 19,
+      }).addTo(map);
+
+      leafletRef.current = map;
+      mettreAJourMarkers();
+    };
+
+    if (window.L) {
+      initCarte();
+    } else {
+      const script = document.createElement('script');
+      script.src    = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      script.onload = initCarte;
+      document.head.appendChild(script);
+    }
+  };
+
+  const creerIcone = (emoji, couleur) => {
+    return window.L.divIcon({
+      html: `
+        <div style="
+          width: 44px; height: 44px;
+          background: ${couleur};
+          border-radius: 50% 50% 50% 0;
+          transform: rotate(-45deg);
+          border: 3px solid #fff;
+          box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+          display: flex; align-items: center; justify-content: center;
+        ">
+          <span style="transform:rotate(45deg); font-size:20px; line-height:1;">
+            ${emoji}
+          </span>
+        </div>
+      `,
+      iconSize:   [44, 44],
+      iconAnchor: [22, 44],
+      className:  '',
+    });
+  };
+
+  const mettreAJourMarkers = () => {
+    const L   = window.L;
+    const map = leafletRef.current;
+    if (!L || !map) return;
+
+    const bounds = [];
+
+    // ── Marker Livreur 🛵 ──
+    if (positionLivreur) {
+      const icone = L.divIcon({
+        html: `
+          <div style="
+            width: 48px; height: 48px;
+            background: #D4600A;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 3px 14px rgba(212,96,10,0.5);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+          ">🛵</div>
+        `,
+        iconSize:   [48, 48],
+        iconAnchor: [24, 24],
+        className:  '',
+      });
+
+      if (markersRef.current.livreur) {
+        markersRef.current.livreur.setLatLng([positionLivreur.lat, positionLivreur.lng]);
+      } else {
+        const m = L.marker([positionLivreur.lat, positionLivreur.lng], { icon: icone }).addTo(map);
+        m.bindPopup(`<b>🛵 ${nomLivreur}</b><br>Livreur en route`);
+        markersRef.current.livreur = m;
+      }
+      bounds.push([positionLivreur.lat, positionLivreur.lng]);
+    }
+
+    // ── Marker Restaurant 🍽️ ──
+    if (positionRestaurant) {
+      if (!markersRef.current.restaurant) {
+        const m = L.marker(
+          [positionRestaurant.lat, positionRestaurant.lng],
+          { icon: creerIcone('🍽️', '#8B4513') }
+        ).addTo(map);
+        m.bindPopup(`<b>🍽️ ${nomRestaurant}</b><br>Point de récupération`);
+        markersRef.current.restaurant = m;
+      }
+      bounds.push([positionRestaurant.lat, positionRestaurant.lng]);
+    }
+
+    // ── Marker Client 🏠 ──
+    if (positionClient) {
+      if (!markersRef.current.client) {
+        const m = L.marker(
+          [positionClient.lat, positionClient.lng],
+          { icon: creerIcone('🏠', '#1D5C3A') }
+        ).addTo(map);
+        m.bindPopup(`<b>🏠 Client</b><br>Adresse de livraison`);
+        markersRef.current.client = m;
+      } else {
+        markersRef.current.client.setLatLng([positionClient.lat, positionClient.lng]);
+      }
+      bounds.push([positionClient.lat, positionClient.lng]);
+    }
+
+    // Ajuster la vue pour voir tous les markers
+    if (bounds.length > 1) {
+      map.fitBounds(bounds, { padding: [40, 40] });
+    } else if (bounds.length === 1) {
+      map.setView(bounds[0], 15);
+    }
+  };
 
   return (
-    <div
-      className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm relative"
-      style={{ height: hauteur }}
-    >
-      {!aDesPositions && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
-          <div className="text-center text-gray-500">
-            <div className="text-3xl mb-2">📍</div>
-            <p className="text-sm">Position GPS en cours de détection...</p>
-          </div>
+    <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', border: '1px solid #E8DDD4' }}>
+      <div ref={mapRef} style={{ height: hauteur, width: '100%', background: '#EDE6DC' }} />
+
+      {/* Légende */}
+      <div style={{
+        position: 'absolute', bottom: 12, left: 12,
+        background: 'rgba(255,255,255,0.95)',
+        backdropFilter: 'blur(8px)',
+        border: '1px solid #E8DDD4',
+        borderRadius: 12, padding: '8px 14px',
+        display: 'flex', flexDirection: 'column', gap: 4,
+        zIndex: 1000,
+      }}>
+        {positionLivreur    && <div style={{ fontSize: 12, color: '#3D3026', display: 'flex', gap: 6 }}><span>🛵</span> Vous</div>}
+        {positionRestaurant && <div style={{ fontSize: 12, color: '#3D3026', display: 'flex', gap: 6 }}><span>🍽️</span> Restaurant</div>}
+        {positionClient     && <div style={{ fontSize: 12, color: '#3D3026', display: 'flex', gap: 6 }}><span>🏠</span> Client</div>}
+      </div>
+
+      {/* Message si pas de position */}
+      {!positionLivreur && !positionClient && !positionRestaurant && (
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: 'rgba(255,255,255,0.9)',
+          borderRadius: 12, padding: '12px 20px',
+          fontSize: 13, color: '#9C8E84', textAlign: 'center',
+          zIndex: 1000,
+        }}>
+          📍 En attente de la position GPS...
         </div>
       )}
-      <MapContainer
-        center={centre}
-        zoom={14}
-        scrollWheelZoom={false}
-        style={{ height: '100%', width: '100%' }}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-
-        <AjusterVue positions={[positionLivreur, positionClient, positionRestaurant]} />
-
-        {positionRestaurant?.lat != null && positionRestaurant?.lng != null && (
-          <Marker
-            position={[positionRestaurant.lat, positionRestaurant.lng]}
-            icon={iconeRestaurant}
-          >
-            <Popup>{nomRestaurant} — Récupérer ici</Popup>
-          </Marker>
-        )}
-
-        {positionLivreur?.lat != null && positionLivreur?.lng != null && (
-          <Marker
-            position={[positionLivreur.lat, positionLivreur.lng]}
-            icon={iconeLivreur}
-          >
-            <Popup>{nomLivreur} — en route</Popup>
-          </Marker>
-        )}
-
-        {positionClient?.lat != null && positionClient?.lng != null && (
-          <Marker
-            position={[positionClient.lat, positionClient.lng]}
-            icon={iconeClient}
-          >
-            <Popup>Adresse de livraison</Popup>
-          </Marker>
-        )}
-      </MapContainer>
     </div>
   );
 };
