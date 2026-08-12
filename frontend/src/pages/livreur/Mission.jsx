@@ -221,6 +221,19 @@ const Mission = () => {
             <i className="ti ti-phone" /> Appeler le restaurant
           </a>
         )}
+        {/* Bouton Google Maps pour le restaurant */}
+        {commande?.restaurant?.latitude && commande?.restaurant?.longitude && (
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${commande.restaurant.latitude},${commande.restaurant.longitude}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 mt-3 bg-blue-600 text-white
+                       px-4 py-2 rounded-lg font-semibold text-sm hover:bg-blue-700
+                       transition-colors"
+          >
+            <i className="ti ti-map-2" /> Naviguer sur Google Maps
+          </a>
+        )}
       </div>
 
       {/* Infos client */}
@@ -241,6 +254,19 @@ const Mission = () => {
                        font-semibold text-sm hover:underline"
           >
             <i className="ti ti-phone" /> Appeler le client
+          </a>
+        )}
+        {/* Bouton Google Maps */}
+        {(positionClient || (commande?.client?.latitude && commande?.client?.longitude)) && (
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${positionClient?.lat || commande?.client?.latitude},${positionClient?.lng || commande?.client?.longitude}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 mt-3 bg-blue-600 text-white
+                       px-4 py-2 rounded-lg font-semibold text-sm hover:bg-blue-700
+                       transition-colors"
+          >
+            <i className="ti ti-map-2" /> Naviguer sur Google Maps
           </a>
         )}
       </div>
