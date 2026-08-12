@@ -172,34 +172,32 @@ const Mission = () => {
       )}
 
       {/* Carte avec position du livreur, restaurant et client */}
-      {position && (positionClient || (commande?.latitudeLivraison && commande?.longitudeLivraison)) && (
-        <div className="mb-6">
-          <CarteGPS
-            positionLivreur={{
-              lat: position.lat,
-              lng: position.lng
-            }}
-            positionRestaurant={
-              commande?.restaurant?.latitude && commande?.restaurant?.longitude
-                ? {
-                    lat: parseFloat(commande.restaurant.latitude),
-                    lng: parseFloat(commande.restaurant.longitude)
-                  }
-                : null
-            }
-            positionClient={positionClient || {
-              lat: parseFloat(commande.latitudeLivraison),
-              lng: parseFloat(commande.longitudeLivraison)
-            }}
-            nomLivreur={utilisateur?.nom || 'Vous'}
-            nomRestaurant={commande?.restaurant?.nom || 'Restaurant'}
-            hauteur="300px"
-          />
-          <p className="text-gray-400 text-xs mt-2 text-center">
-            🔴 Vous — 🟠 Restaurant — 🟢 Client {positionClient && '(en direct)'}
-          </p>
-        </div>
-      )}
+      <div className="mb-6">
+        <CarteGPS
+          positionLivreur={position ? {
+            lat: position.lat,
+            lng: position.lng
+          } : null}
+          positionRestaurant={
+            commande?.restaurant?.latitude && commande?.restaurant?.longitude
+              ? {
+                  lat: parseFloat(commande.restaurant.latitude),
+                  lng: parseFloat(commande.restaurant.longitude)
+                }
+              : null
+          }
+          positionClient={positionClient || (commande?.latitudeLivraison && commande?.longitudeLivraison ? {
+            lat: parseFloat(commande.latitudeLivraison),
+            lng: parseFloat(commande.longitudeLivraison)
+          } : null)}
+          nomLivreur={utilisateur?.nom || 'Vous'}
+          nomRestaurant={commande?.restaurant?.nom || 'Restaurant'}
+          hauteur="300px"
+        />
+        <p className="text-gray-400 text-xs mt-2 text-center">
+          🔴 Vous — 🟠 Restaurant — 🟢 Client {positionClient && '(en direct)'}
+        </p>
+      </div>
 
       {/* Infos restaurant */}
       <div className="carte p-5 mb-4">

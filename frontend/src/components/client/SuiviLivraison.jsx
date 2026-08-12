@@ -129,25 +129,23 @@ const SuiviLivraison = ({ livraisonId, positionClient }) => {
       </div>
 
       {/* Carte GPS temps réel */}
-      {(positionLivreur || positionClient) && (
-        <div>
-          <h4 className="font-bold text-gray-800 mb-2 text-sm flex items-center gap-2">
-            <i className="ti ti-map-pin" /> Position du livreur en temps réel
-            {positionLivreur && (
-              <span className="flex items-center gap-1 text-green-600 text-xs font-normal">
-                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"/>
-                En direct
-              </span>
-            )}
-          </h4>
-          <CarteGPS
-            positionLivreur={positionLivreur}
-            positionClient={positionClient}
-            nomLivreur={livraison.livreur?.nom}
-            hauteur="250px"
-          />
-        </div>
-      )}
+      <div>
+        <h4 className="font-bold text-gray-800 mb-2 text-sm flex items-center gap-2">
+          <i className="ti ti-map-pin" /> Position du livreur en temps réel
+          {positionLivreur && (
+            <span className="flex items-center gap-1 text-green-600 text-xs font-normal">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"/>
+              En direct
+            </span>
+          )}
+        </h4>
+        <CarteGPS
+          positionLivreur={positionLivreur}
+          positionClient={positionClient}
+          nomLivreur={livraison.livreur?.nom}
+          hauteur="250px"
+        />
+      </div>
     </div>
   );
 };

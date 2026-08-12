@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 
 const CENTRE_TOUBA = [14.8667, -15.8833];
 
-const creerIcone = (iconClass, couleur) =>
+const creerIcone = (emoji, couleur) =>
   L.divIcon({
     className: '',
     html: `<div style="
@@ -13,19 +13,19 @@ const creerIcone = (iconClass, couleur) =>
       width:36px;height:36px;
       border-radius:50%;
       display:flex;align-items:center;justify-content:center;
-      font-size:16px;
+      font-size:18px;
       color:white;
       border:2px solid white;
       box-shadow:0 2px 8px rgba(0,0,0,0.25);
-    "><i class=\"${iconClass} \" style=\"font-size:16px;color:white\"></i></div>`,
+    ">${emoji}</div>`,
     iconSize:   [36, 36],
     iconAnchor: [18, 18],
     popupAnchor:[0, -20],
   });
 
-const iconeLivreur = creerIcone('ti ti-truck-delivery', '#C8441A');
-const iconeClient  = creerIcone('ti ti-home', '#1A6B3C');
-const iconeRestaurant = creerIcone('ti ti-utensils', '#ED8936');
+const iconeLivreur = creerIcone('🛵', '#C8441A');
+const iconeClient  = creerIcone('🏠', '#1A6B3C');
+const iconeRestaurant = creerIcone('🍽️', '#ED8936');
 
 const AjusterVue = ({ positions }) => {
   const map = useMap();
@@ -63,11 +63,21 @@ const CarteGPS = ({
     ? [positions[0].lat, positions[0].lng]
     : CENTRE_TOUBA;
 
+  const aDesPositions = positions.length > 0;
+
   return (
     <div
-      className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm"
+      className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm relative"
       style={{ height: hauteur }}
     >
+      {!aDesPositions && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
+          <div className="text-center text-gray-500">
+            <div className="text-3xl mb-2">📍</div>
+            <p className="text-sm">Position GPS en cours de détection...</p>
+          </div>
+        </div>
+      )}
       <MapContainer
         center={centre}
         zoom={14}
