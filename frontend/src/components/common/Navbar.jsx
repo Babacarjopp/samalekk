@@ -8,6 +8,7 @@ const Navbar = () => {
   const { nombreArticles } = usePanier();
   const navigate = useNavigate();
   const [menuOuvert, setMenuOuvert] = useState(false);
+  const [mobileMenuOuvert, setMobileMenuOuvert] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -18,10 +19,25 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', fermer);
   }, []);
 
+  useEffect(() => {
+    const fermerMobile = (e) => {
+      if (mobileMenuOuvert && !e.target.closest('.mobile-menu-btn') && !e.target.closest('.mobile-menu')) {
+        setMobileMenuOuvert(false);
+      }
+    };
+    document.addEventListener('mousedown', fermerMobile);
+    return () => document.removeEventListener('mousedown', fermerMobile);
+  }, [mobileMenuOuvert]);
+
   const handleDeconnexion = () => {
     seDeconnecter();
     setMenuOuvert(false);
+    setMobileMenuOuvert(false);
     navigate('/');
+  };
+
+  const fermerMobileMenu = () => {
+    setMobileMenuOuvert(false);
   };
 
   const lienDashboard = {
@@ -46,7 +62,16 @@ const Navbar = () => {
           </div>
         </Link>
 
-        {/* Liens centre */}
+        {/* Mobile menu button */}
+        <button 
+          className="mobile-menu-btn"
+          onClick={() => setMobileMenuOuvert(!mobileMenuOuvert)}
+          aria-label="Menu"
+        >
+          <i className={`ti ${mobileMenuOuvert ? 'ti-x' : 'ti-menu-2'}`} />
+        </button>
+
+        {/* Liens centre - Desktop */}
         <div className="nav-links">
           <Link to="/restaurants" className="nav-link">Restos</Link>
           {estConnecte && utilisateur?.role !== 'client' && (
@@ -56,7 +81,7 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Actions droite */}
+        {/* Actions droite - Desktop */}
         <div className="nav-right">
 
           {/* Panier client */}
@@ -113,6 +138,57 @@ const Navbar = () => {
           )}
         </div>
       </div>
+
+      {/* Mobile menu */}
+      {mobileMenuOuvert && (
+        <div className="mobile-menu">
+          <div className="mobile-menu-inner">
+            <Link to="/restaurants" className="mobile-menu-item" onClick={fermerMobileMenu}>
+              <i className="ti ti-restaurant" />
+              Restaurants
+            </Link>
+            
+            {estConnecte && utilisateur?.role === 'client' && (
+              <Link to="/panier" className="mobile-menu-item" onClick={fermerMobileMenu}>
+                <i className="ti ti-shopping-cart" />
+                Panier
+                {nombreArticles > 0 && (
+                  <span className="mobile-menu-badge">{nombreArticles}</span>
+                )}
+              </Link>
+            )}
+            
+            {estConnecte && lienDashboard[utilisateur?.role] && (
+              <Link to={lienDashboard[utilisateur?.role]} className="mobile-menu-item" onClick={fermerMobileMenu}>
+                <i className="ti ti-layout-dashboard" />
+                Mon compte
+              </Link>
+            )}
+            
+            {estConnecte ? (
+              <>
+                <div className="mobile-menu-divider" />
+                <button className="mobile-menu-item mobile-menu-logout" onClick={handleDeconnexion}>
+                  <i className="ti ti-logout" />
+                  Se déconnecter
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="mobile-menu-divider" />
+                <Link to="/connexion" className="mobile-menu-item" onClick={fermerMobileMenu}>
+                  <i className="ti ti-login" />
+                  Connexion
+                </Link>
+                <Link to="/inscription" className="mobile-menu-item" onClick={fermerMobileMenu}>
+                  <i className="ti ti-user-plus" />
+                  S'inscrire
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

@@ -123,45 +123,36 @@ export default function Commande() {
   );
 
   return (
-    <div style={{ background: '#FBF7F3', minHeight: '100vh' }}>
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '32px 24px' }}>
+    <div className="commande-page">
+      <div className="commande-container">
 
-        <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: 26, fontWeight: 700, color: '#16120E', marginBottom: 28 }}>
+        <h1 className="commande-title">
           Finaliser la commande
         </h1>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24 }}>
+        <div className="commande-grid">
 
           {/* ── Formulaire gauche ── */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
             {/* ÉTAPE 1 — Quartier */}
-            <div style={{ background: '#fff', border: '1px solid #E8DDD4', borderRadius: 20, padding: '22px 24px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
-                <div style={{ width: 30, height: 30, background: '#D4600A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, fontWeight: 700, fontFamily: 'Outfit, sans-serif', flexShrink: 0 }}>
-                  1
-                </div>
-                <h2 style={{ fontFamily: 'Outfit, sans-serif', fontSize: 16, fontWeight: 700, color: '#16120E' }}>
+            <div className="commande-section">
+              <div className="commande-section-header">
+                <div className="step-number">1</div>
+                <h2 className="commande-section-title">
                   Où livrer ?
                 </h2>
               </div>
 
               {/* Sélecteur quartier */}
-              <div style={{ marginBottom: 14 }}>
-                <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: '#3D3026', marginBottom: 8 }}>
+              <div className="form-group">
+                <label className="form-label">
                   Choisissez votre quartier *
                 </label>
                 <select
                   value={quartierChoisi}
                   onChange={e => { setQuartierChoisi(e.target.value); setErreur(''); }}
-                  style={{
-                    width: '100%', padding: '13px 16px',
-                    border: `1px solid ${quartierChoisi ? '#D4600A' : '#D8CDBF'}`,
-                    borderRadius: 12, fontSize: 15,
-                    fontFamily: 'inherit', color: quartierChoisi ? '#16120E' : '#9C8E84',
-                    background: '#FAF8F5', outline: 'none',
-                    appearance: 'none', cursor: 'pointer',
-                  }}
+                  className="form-select"
                 >
                   <option value="">-- Sélectionnez votre quartier --</option>
                   {QUARTIERS.map(q => (
@@ -171,8 +162,8 @@ export default function Commande() {
               </div>
 
               {/* Détail adresse */}
-              <div style={{ marginBottom: 14 }}>
-                <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: '#3D3026', marginBottom: 8 }}>
+              <div className="form-group">
+                <label className="form-label">
                   Précisez votre adresse (optionnel)
                 </label>
                 <textarea
@@ -180,47 +171,35 @@ export default function Commande() {
                   onChange={e => setDetail(e.target.value)}
                   placeholder="Ex : Près de la pharmacie, maison bleue, côté mosquée..."
                   rows={2}
-                  style={{
-                    width: '100%', padding: '13px 16px',
-                    border: '1px solid #D8CDBF', borderRadius: 12,
-                    fontSize: 14, fontFamily: 'inherit',
-                    color: '#16120E', background: '#FAF8F5',
-                    outline: 'none', resize: 'none',
-                  }}
-                  onFocus={e => e.target.style.borderColor = '#D4600A'}
-                  onBlur={e => e.target.style.borderColor = '#D8CDBF'}
+                  className="form-textarea"
                 />
-                <p style={{ fontSize: 12, color: '#9C8E84', marginTop: 5 }}>
+                <p className="form-help">
                   Ajoutez des détails pour aider le livreur à vous trouver
                 </p>
               </div>
 
               {/* Aperçu adresse + GPS */}
               {quartierChoisi && (
-                <div style={{
-                  padding: '12px 14px',
-                  background: '#FDF0E6', border: '1px solid #EDBA8C',
-                  borderRadius: 12, fontSize: 13, color: '#7A3A10',
-                }}>
-                  <div style={{ fontWeight: 600, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <i className="ti ti-map-pin" style={{ fontSize: 15 }} />
+                <div className="adresse-preview">
+                  <div className="adresse-preview-header">
+                    <i className="ti ti-map-pin" />
                     Adresse de livraison
                   </div>
-                  <div style={{ color: '#3D3026' }}>{adresseLivraison}</div>
+                  <div className="adresse-preview-text">{adresseLivraison}</div>
 
                   {/* Indicateur GPS */}
-                  <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+                  <div className="gps-indicator">
                     {gpsActif ? (
                       <>
-                        <div style={{ width: 7, height: 7, background: '#1D5C3A', borderRadius: '50%' }} />
-                        <span style={{ color: '#1D5C3A', fontWeight: 500 }}>
+                        <div className="gps-dot gps-active" />
+                        <span className="gps-text gps-active">
                           GPS précis activé — position exacte transmise au livreur
                         </span>
                       </>
                     ) : (
                       <>
-                        <div style={{ width: 7, height: 7, background: '#D4600A', borderRadius: '50%' }} />
-                        <span style={{ color: '#D4600A', fontWeight: 500 }}>
+                        <div className="gps-dot gps-inactive" />
+                        <span className="gps-text gps-inactive">
                           Centre de {quartierChoisi} transmis au livreur
                         </span>
                       </>
@@ -231,41 +210,29 @@ export default function Commande() {
             </div>
 
             {/* ÉTAPE 2 — Paiement */}
-            <div style={{ background: '#fff', border: '1px solid #E8DDD4', borderRadius: 20, padding: '22px 24px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
-                <div style={{ width: 30, height: 30, background: '#D4600A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, fontWeight: 700, fontFamily: 'Outfit, sans-serif', flexShrink: 0 }}>
-                  2
-                </div>
-                <h2 style={{ fontFamily: 'Outfit, sans-serif', fontSize: 16, fontWeight: 700, color: '#16120E' }}>
+            <div className="commande-section">
+              <div className="commande-section-header">
+                <div className="step-number">2</div>
+                <h2 className="commande-section-title">
                   Mode de paiement
                 </h2>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div className="payment-options">
                 {modesPaiement.map(mode => (
                   <button
                     key={mode.valeur}
                     type="button"
                     onClick={() => setModePaiement(mode.valeur)}
-                    style={{
-                      width: '100%', padding: '14px 18px',
-                      border: `1.5px solid ${modePaiement === mode.valeur ? '#D4600A' : '#E8DDD4'}`,
-                      borderRadius: 14, textAlign: 'left',
-                      background: modePaiement === mode.valeur ? '#FDF0E6' : '#fff',
-                      cursor: 'pointer', fontFamily: 'inherit',
-                      display: 'flex', alignItems: 'center', gap: 14,
-                      transition: 'all 0.15s',
-                    }}
+                    className={`payment-option ${modePaiement === mode.valeur ? 'selected' : ''}`}
                   >
-                    <i className={`ti ${mode.icone}`} style={{ fontSize: 24, color: modePaiement === mode.valeur ? '#D4600A' : '#9C8E84', flexShrink: 0 }} />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: '#16120E', marginBottom: 2 }}>
-                        {mode.label}
-                      </div>
-                      <div style={{ fontSize: 13, color: '#9C8E84' }}>{mode.desc}</div>
+                    <i className={`ti ${mode.icone} payment-icon`} />
+                    <div className="payment-info">
+                      <div className="payment-label">{mode.label}</div>
+                      <div className="payment-desc">{mode.desc}</div>
                     </div>
                     {modePaiement === mode.valeur && (
-                      <i className="ti ti-circle-check" style={{ fontSize: 20, color: '#D4600A', flexShrink: 0 }} />
+                      <i className="ti ti-circle-check payment-check" />
                     )}
                   </button>
                 ))}
@@ -274,41 +241,30 @@ export default function Commande() {
 
             {/* Erreur */}
             {erreur && (
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '14px 18px',
-                background: '#FCEAEA', border: '1px solid #EEB4B4',
-                borderRadius: 12, color: '#B83232', fontSize: 14,
-              }}>
-                <i className="ti ti-alert-circle" style={{ fontSize: 18, flexShrink: 0 }} />
+              <div className="error-message">
+                <i className="ti ti-alert-circle" />
                 {erreur}
               </div>
             )}
           </div>
 
           {/* ── Récapitulatif droite ── */}
-          <div>
-            <div style={{
-              background: '#fff', border: '1px solid #E8DDD4',
-              borderRadius: 20, overflow: 'hidden',
-              position: 'sticky', top: 24,
-            }}>
-              <div style={{ padding: '18px 20px', borderBottom: '1px solid #E8DDD4' }}>
-                <h3 style={{ fontFamily: 'Outfit, sans-serif', fontSize: 16, fontWeight: 700, color: '#16120E', marginBottom: 3 }}>
-                  Récapitulatif
-                </h3>
-                <p style={{ fontSize: 13, color: '#9C8E84', display: 'flex', alignItems: 'center', gap: 5 }}>
-                  <i className="ti ti-building-store" style={{ fontSize: 14 }} />
+          <div className="recapitulatif">
+            <div className="recapitulatif-card">
+              <div className="recapitulatif-header">
+                <h3 className="recapitulatif-title">Récapitulatif</h3>
+                <p className="recapitulatif-restaurant">
+                  <i className="ti ti-building-store" />
                   {restaurantNom}
                 </p>
               </div>
 
               {/* Articles */}
-              <div style={{ padding: '14px 20px', borderBottom: '1px solid #E8DDD4', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div className="recapitulatif-articles">
                 {articles.map(a => (
-                  <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
-                    <span style={{ color: '#3D3026' }}>{a.quantite}× {a.nom}</span>
-                    <span style={{ fontWeight: 500, color: '#16120E' }}>
+                  <div key={a.id} className="recapitulatif-article">
+                    <span className="article-name">{a.quantite}× {a.nom}</span>
+                    <span className="article-price">
                       {(a.prix * a.quantite).toLocaleString()} F
                     </span>
                   </div>
@@ -316,44 +272,35 @@ export default function Commande() {
               </div>
 
               {/* Totaux */}
-              <div style={{ padding: '14px 20px', borderBottom: '1px solid #E8DDD4', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
-                  <span style={{ color: '#9C8E84' }}>Sous-total</span>
-                  <span style={{ color: '#3D3026' }}>{sousTotal.toLocaleString()} F</span>
+              <div className="recapitulatif-totaux">
+                <div className="total-line">
+                  <span>Sous-total</span>
+                  <span>{sousTotal.toLocaleString()} F</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
-                  <span style={{ color: '#9C8E84' }}>Livraison</span>
-                  <span style={{ color: '#3D3026' }}>{FRAIS_LIVRAISON.toLocaleString()} F</span>
+                <div className="total-line">
+                  <span>Livraison</span>
+                  <span>{FRAIS_LIVRAISON.toLocaleString()} F</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 17, fontWeight: 700, paddingTop: 10, marginTop: 4, borderTop: '1px solid #E8DDD4' }}>
-                  <span style={{ color: '#16120E' }}>Total</span>
-                  <span style={{ color: '#D4600A' }}>{total.toLocaleString()} FCFA</span>
+                <div className="total-line total-final">
+                  <span>Total</span>
+                  <span className="total-amount">{total.toLocaleString()} FCFA</span>
                 </div>
               </div>
 
               {/* Bouton commander */}
-              <div style={{ padding: '16px 20px' }}>
+              <div className="recapitulatif-action">
                 <button
                   onClick={handleSubmit}
                   disabled={chargement || !quartierChoisi}
-                  style={{
-                    width: '100%', padding: '14px',
-                    background: chargement || !quartierChoisi ? '#E8846C' : '#D4600A',
-                    color: '#fff', border: 'none', borderRadius: 14,
-                    fontFamily: 'Outfit, sans-serif', fontSize: 16, fontWeight: 700,
-                    cursor: chargement || !quartierChoisi ? 'not-allowed' : 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                    boxShadow: '0 4px 14px rgba(212,96,10,0.3)',
-                    transition: 'all 0.15s',
-                  }}
+                  className={`btn-commander ${!quartierChoisi ? 'disabled' : ''}`}
                 >
                   {chargement
-                    ? <><i className="ti ti-loader-2" style={{ fontSize: 18, animation: 'spin 0.7s linear infinite' }} /> Envoi...</>
-                    : <><i className="ti ti-check" style={{ fontSize: 18 }} /> Confirmer la commande</>
+                    ? <><i className="ti ti-loader-2 loading-icon" /> Envoi...</>
+                    : <><i className="ti ti-check" /> Confirmer la commande</>
                   }
                 </button>
                 {!quartierChoisi && (
-                  <p style={{ fontSize: 12, color: '#9C8E84', textAlign: 'center', marginTop: 8 }}>
+                  <p className="btn-help">
                     Choisissez votre quartier pour commander
                   </p>
                 )}
@@ -363,7 +310,613 @@ export default function Commande() {
         </div>
       </div>
 
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        .commande-page {
+          background: #FBF7F3;
+          min-height: 100vh;
+        }
+
+        .commande-container {
+          max-width: 900px;
+          margin: 0 auto;
+          padding: 20px 16px;
+        }
+
+        @media (min-width: 768px) {
+          .commande-container {
+            padding: 32px 24px;
+          }
+        }
+
+        .commande-title {
+          font-family: 'Outfit', sans-serif;
+          font-size: 22px;
+          font-weight: 700;
+          color: #16120E;
+          margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+          .commande-title {
+            font-size: 26px;
+            margin-bottom: 28px;
+          }
+        }
+
+        .commande-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+          .commande-grid {
+            grid-template-columns: 1fr 340px;
+            gap: 24px;
+          }
+        }
+
+        .commande-section {
+          background: #fff;
+          border: 1px solid #E8DDD4;
+          border-radius: 20px;
+          padding: 18px 16px;
+        }
+
+        @media (min-width: 768px) {
+          .commande-section {
+            padding: 22px 24px;
+          }
+        }
+
+        .commande-section-header {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 16px;
+        }
+
+        @media (min-width: 768px) {
+          .commande-section-header {
+            margin-bottom: 18px;
+          }
+        }
+
+        .step-number {
+          width: 28px;
+          height: 28px;
+          background: #D4600A;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          font-size: 13px;
+          font-weight: 700;
+          font-family: 'Outfit', sans-serif;
+          flex-shrink: 0;
+        }
+
+        @media (min-width: 768px) {
+          .step-number {
+            width: 30px;
+            height: 30px;
+            font-size: 14px;
+          }
+        }
+
+        .commande-section-title {
+          font-family: 'Outfit', sans-serif;
+          font-size: 15px;
+          font-weight: 700;
+          color: #16120E;
+        }
+
+        @media (min-width: 768px) {
+          .commande-section-title {
+            font-size: 16px;
+          }
+        }
+
+        .form-group {
+          margin-bottom: 12px;
+        }
+
+        @media (min-width: 768px) {
+          .form-group {
+            margin-bottom: 14px;
+          }
+        }
+
+        .form-label {
+          display: block;
+          font-size: 12px;
+          font-weight: 500;
+          color: #3D3026;
+          margin-bottom: 6px;
+        }
+
+        @media (min-width: 768px) {
+          .form-label {
+            font-size: 13px;
+            margin-bottom: 8px;
+          }
+        }
+
+        .form-select {
+          width: 100%;
+          padding: 12px 14px;
+          border: 1px solid #D8CDBF;
+          border-radius: 12px;
+          font-size: 14px;
+          font-family: inherit;
+          color: #9C8E84;
+          background: #FAF8F5;
+          outline: none;
+          appearance: none;
+          cursor: pointer;
+        }
+
+        @media (min-width: 768px) {
+          .form-select {
+            padding: 13px 16px;
+            font-size: 15px;
+          }
+        }
+
+        .form-select:focus {
+          border-color: #D4600A;
+        }
+
+        .form-textarea {
+          width: 100%;
+          padding: 12px 14px;
+          border: 1px solid #D8CDBF;
+          border-radius: 12px;
+          font-size: 13px;
+          font-family: inherit;
+          color: #16120E;
+          background: #FAF8F5;
+          outline: none;
+          resize: none;
+        }
+
+        @media (min-width: 768px) {
+          .form-textarea {
+            padding: 13px 16px;
+            font-size: 14px;
+          }
+        }
+
+        .form-textarea:focus {
+          border-color: #D4600A;
+        }
+
+        .form-help {
+          font-size: 11px;
+          color: #9C8E84;
+          margin-top: 4px;
+        }
+
+        @media (min-width: 768px) {
+          .form-help {
+            font-size: 12px;
+            margin-top: 5px;
+          }
+        }
+
+        .adresse-preview {
+          padding: 10px 12px;
+          background: #FDF0E6;
+          border: 1px solid #EDBA8C;
+          border-radius: 12px;
+          font-size: 12px;
+          color: #7A3A10;
+        }
+
+        @media (min-width: 768px) {
+          .adresse-preview {
+            padding: 12px 14px;
+            font-size: 13px;
+          }
+        }
+
+        .adresse-preview-header {
+          font-weight: 600;
+          margin-bottom: 3;
+          display: flex;
+          align-items: center;
+          gap: 6;
+        }
+
+        .adresse-preview-text {
+          color: #3D3026;
+        }
+
+        .gps-indicator {
+          margin-top: 6;
+          display: flex;
+          align-items: center;
+          gap: 6;
+          font-size: 11px;
+        }
+
+        @media (min-width: 768px) {
+          .gps-indicator {
+            margin-top: 8;
+            font-size: 12px;
+          }
+        }
+
+        .gps-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+        }
+
+        @media (min-width: 768px) {
+          .gps-dot {
+            width: 7px;
+            height: 7px;
+          }
+        }
+
+        .gps-active {
+          background: #1D5C3A;
+        }
+
+        .gps-inactive {
+          background: #D4600A;
+        }
+
+        .gps-text {
+          font-weight: 500;
+        }
+
+        .gps-text.gps-active {
+          color: #1D5C3A;
+        }
+
+        .gps-text.gps-inactive {
+          color: #D4600A;
+        }
+
+        .payment-options {
+          display: flex;
+          flex-direction: column;
+          gap: 8;
+        }
+
+        @media (min-width: 768px) {
+          .payment-options {
+            gap: 10;
+          }
+        }
+
+        .payment-option {
+          width: 100%;
+          padding: 12px 14px;
+          border: 1.5px solid #E8DDD4;
+          border-radius: 14px;
+          text-align: left;
+          background: #fff;
+          cursor: pointer;
+          font-family: inherit;
+          display: flex;
+          align-items: center;
+          gap: 12;
+          transition: all 0.15s;
+        }
+
+        @media (min-width: 768px) {
+          .payment-option {
+            padding: 14px 18px;
+            gap: 14;
+          }
+        }
+
+        .payment-option.selected {
+          border-color: #D4600A;
+          background: #FDF0E6;
+        }
+
+        .payment-icon {
+          font-size: 20px;
+          color: #9C8E84;
+          flex-shrink: 0;
+        }
+
+        @media (min-width: 768px) {
+          .payment-icon {
+            font-size: 24px;
+          }
+        }
+
+        .payment-option.selected .payment-icon {
+          color: #D4600A;
+        }
+
+        .payment-info {
+          flex: 1;
+        }
+
+        .payment-label {
+          font-size: 14px;
+          font-weight: 600;
+          color: #16120E;
+          margin-bottom: 1;
+        }
+
+        @media (min-width: 768px) {
+          .payment-label {
+            font-size: 15px;
+            margin-bottom: 2;
+          }
+        }
+
+        .payment-desc {
+          font-size: 12px;
+          color: #9C8E84;
+        }
+
+        @media (min-width: 768px) {
+          .payment-desc {
+            font-size: 13px;
+          }
+        }
+
+        .payment-check {
+          font-size: 18px;
+          color: #D4600A;
+          flex-shrink: 0;
+        }
+
+        @media (min-width: 768px) {
+          .payment-check {
+            font-size: 20px;
+          }
+        }
+
+        .error-message {
+          display: flex;
+          align-items: center;
+          gap: 10;
+          padding: 12px 14px;
+          background: #FCEAEA;
+          border: 1px solid #EEB4B4;
+          border-radius: 12px;
+          color: #B83232;
+          font-size: 13px;
+        }
+
+        @media (min-width: 768px) {
+          .error-message {
+            padding: 14px 18px;
+            font-size: 14px;
+          }
+        }
+
+        .recapitulatif {
+          order: -1;
+        }
+
+        @media (min-width: 768px) {
+          .recapitulatif {
+            order: 1;
+          }
+        }
+
+        .recapitulatif-card {
+          background: #fff;
+          border: 1px solid #E8DDD4;
+          border-radius: 20px;
+          overflow: hidden;
+          position: sticky;
+          top: 20px;
+        }
+
+        @media (min-width: 768px) {
+          .recapitulatif-card {
+            top: 24px;
+          }
+        }
+
+        .recapitulatif-header {
+          padding: 14px 16px;
+          border-bottom: 1px solid #E8DDD4;
+        }
+
+        @media (min-width: 768px) {
+          .recapitulatif-header {
+            padding: 18px 20px;
+          }
+        }
+
+        .recapitulatif-title {
+          font-family: 'Outfit', sans-serif;
+          font-size: 15px;
+          font-weight: 700;
+          color: #16120E;
+          margin-bottom: 2;
+        }
+
+        @media (min-width: 768px) {
+          .recapitulatif-title {
+            font-size: 16px;
+          }
+        }
+
+        .recapitulatif-restaurant {
+          font-size: 12px;
+          color: #9C8E84;
+          display: flex;
+          align-items: center;
+          gap: 5;
+        }
+
+        @media (min-width: 768px) {
+          .recapitulatif-restaurant {
+            font-size: 13px;
+          }
+        }
+
+        .recapitulatif-articles {
+          padding: 12px 16px;
+          border-bottom: 1px solid #E8DDD4;
+          display: flex;
+          flex-direction: column;
+          gap: 6;
+        }
+
+        @media (min-width: 768px) {
+          .recapitulatif-articles {
+            padding: 14px 20px;
+            gap: 8;
+          }
+        }
+
+        .recapitulatif-article {
+          display: flex;
+          justify-content: space-between;
+          font-size: 13px;
+        }
+
+        @media (min-width: 768px) {
+          .recapitulatif-article {
+            font-size: 14px;
+          }
+        }
+
+        .article-name {
+          color: #3D3026;
+        }
+
+        .article-price {
+          font-weight: 500;
+          color: #16120E;
+        }
+
+        .recapitulatif-totaux {
+          padding: 12px 16px;
+          border-bottom: 1px solid #E8DDD4;
+          display: flex;
+          flex-direction: column;
+          gap: 4;
+        }
+
+        @media (min-width: 768px) {
+          .recapitulatif-totaux {
+            padding: 14px 20px;
+            gap: 6;
+          }
+        }
+
+        .total-line {
+          display: flex;
+          justify-content: space-between;
+          font-size: 13px;
+        }
+
+        @media (min-width: 768px) {
+          .total-line {
+            font-size: 14px;
+          }
+        }
+
+        .total-line span:first-child {
+          color: #9C8E84;
+        }
+
+        .total-line span:last-child {
+          color: #3D3026;
+        }
+
+        .total-final {
+          padding-top: 8;
+          margin-top: 4;
+          border-top: 1px solid #E8DDD4;
+          font-size: 16px;
+          font-weight: 700;
+        }
+
+        @media (min-width: 768px) {
+          .total-final {
+            padding-top: 10;
+            font-size: 17px;
+          }
+        }
+
+        .total-final span:first-child {
+          color: #16120E;
+        }
+
+        .total-amount {
+          color: #D4600A;
+        }
+
+        .recapitulatif-action {
+          padding: 14px 16px;
+        }
+
+        @media (min-width: 768px) {
+          .recapitulatif-action {
+            padding: 16px 20px;
+          }
+        }
+
+        .btn-commander {
+          width: 100%;
+          padding: 12px;
+          background: #D4600A;
+          color: #fff;
+          border: none;
+          border-radius: 14px;
+          font-family: 'Outfit', sans-serif;
+          font-size: 15px;
+          font-weight: 700;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8;
+          box-shadow: 0 4px 14px rgba(212,96,10,0.3);
+          transition: all 0.15s;
+        }
+
+        @media (min-width: 768px) {
+          .btn-commander {
+            padding: 14px;
+            font-size: 16px;
+          }
+        }
+
+        .btn-commander.disabled {
+          background: #E8846C;
+          cursor: not-allowed;
+        }
+
+        .btn-help {
+          font-size: 11px;
+          color: #9C8E84;
+          text-align: center;
+          margin-top: 6px;
+        }
+
+        @media (min-width: 768px) {
+          .btn-help {
+            font-size: 12px;
+            margin-top: 8px;
+          }
+        }
+
+        .loading-icon {
+          animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

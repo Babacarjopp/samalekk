@@ -44,12 +44,13 @@ const sInscrire = async (req, res) => {
       message: 'Compte créé avec succès.',
       token,
       utilisateur: {
-        id:        nouvelUtilisateur.id,
-        nom:       nouvelUtilisateur.nom,
-        email:     nouvelUtilisateur.email,
-        telephone: nouvelUtilisateur.telephone,
-        role:      nouvelUtilisateur.role,
-        statut:    nouvelUtilisateur.statut
+        id:         nouvelUtilisateur.id,
+        nom:        nouvelUtilisateur.nom,
+        email:      nouvelUtilisateur.email,
+        telephone:  nouvelUtilisateur.telephone,
+        role:       nouvelUtilisateur.role,
+        statut:     nouvelUtilisateur.statut,
+        disponible: nouvelUtilisateur.disponible
       }
     });
 
@@ -123,6 +124,7 @@ const seConnecter = async (req, res) => {
         telephone:  utilisateur.telephone,
         role:       utilisateur.role,
         photo:      utilisateur.photo,
+        disponible: utilisateur.disponible,
         restaurant: utilisateur.restaurant || null
       }
     });
@@ -147,7 +149,12 @@ const monProfil = async (req, res) => {
       ]
     });
 
-    res.json({ utilisateur });
+    res.json({ 
+      utilisateur: {
+        ...utilisateur.toJSON(),
+        disponible: utilisateur.disponible
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: 'Erreur lors de la récupération du profil.' });
   }

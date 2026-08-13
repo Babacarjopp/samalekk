@@ -71,6 +71,18 @@ export const AuthProvider = ({ children }) => {
   const estLivreur   = utilisateur?.role === 'livreur';
   const estAdmin     = utilisateur?.role === 'admin';
   const compteActif  = utilisateur?.statut === 'actif';
+  const disponible   = utilisateur?.disponible || false;
+
+  const setDisponible = async (nouvelleDispo) => {
+    try {
+      await authService.modifierProfil({ disponible: nouvelleDispo });
+      setUtilisateur(prev => ({ ...prev, disponible: nouvelleDispo }));
+      localStorage.setItem('utilisateur', JSON.stringify({ ...utilisateur, disponible: nouvelleDispo }));
+    } catch (error) {
+      console.error('Erreur mise à jour disponibilité:', error);
+      throw error;
+    }
+  };
 
   return (
     <AuthContext.Provider value={{
@@ -82,6 +94,8 @@ export const AuthProvider = ({ children }) => {
       estLivreur,
       estAdmin,
       compteActif,
+      disponible,
+      setDisponible,
       seConnecter,
       sInscrire,
       seDeconnecter,

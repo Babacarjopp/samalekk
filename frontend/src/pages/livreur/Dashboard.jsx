@@ -1,34 +1,30 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { livraisonService } from '../../services/livraisonService';
 import { formatPrix } from '../../utils/formatPrix';
 import { tempsEcoule } from '../../utils/formatDate';
 import Button from '../../components/common/Button';
 import Loader from '../../components/common/Loader';
-import api from '../../services/api';
 
 const DashboardLivreur = () => {
   const navigate = useNavigate();
-  const [missions,    setMissions]    = useState([]);
-  const [disponible,  setDisponible]  = useState(false);
-  const [chargement,  setChargement]  = useState(true);
+  const { utilisateur, disponible, setDisponible } = useAuth();
+  const [missions, setMissions] = useState([]);
+  const [chargement, setChargement] = useState(true);
   const [acceptEnCours, setAcceptEnCours] = useState(null);
 
   useEffect(() => {
-    chargerDonnees();
+    chargerMissions();
     // Rafraîchir les missions toutes les 30 secondes
-    const interval = setInterval(chargerDonnees, 30000);
+    const interval = setInterval(chargerMissions, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [disponible]);
 
-  const chargerDonnees = async () => {
+  const chargerMissions = async () => {
     try {
-      const [missRes, profilRes] = await Promise.all([
-        livraisonService.missionsDisponibles(),
-        api.get('/auth/profil')
-      ]);
+      const missRes = await livraisonService.missionsDisponibles();
       setMissions(missRes.data.livraisons);
-      setDisponible(profilRes.data.utilisateur.disponible);
     } catch (err) {
       console.error(err);
     } finally {
@@ -38,8 +34,7 @@ const DashboardLivreur = () => {
 
   const toggleDisponibilite = async () => {
     try {
-      await api.put('/auth/profil', { disponible: !disponible });
-      setDisponible(!disponible);
+      await setDisponible(!disponible);
     } catch (err) {
       console.error(err);
     }
@@ -67,7 +62,7 @@ const DashboardLivreur = () => {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Mon espace livreur</h1>
             <p className="text-gray-500 mt-1">
-              Gérez vos missions de livraison
+              Bienvenue, {utilisateur?.nom}
             </p>
           </div>
 
