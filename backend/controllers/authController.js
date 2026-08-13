@@ -166,6 +166,8 @@ const modifierProfil = async (req, res) => {
     const { nom, telephone, vehicule, disponible } = req.body;
     const utilisateur = await Utilisateur.findByPk(req.utilisateur.id);
 
+    console.log('Modification profil - Utilisateur:', utilisateur?.role, 'Données reçues:', { nom, telephone, vehicule, disponible });
+
     if (!utilisateur) {
       return res.status(404).json({ message: 'Utilisateur introuvable.' });
     }
@@ -195,12 +197,37 @@ const modifierProfil = async (req, res) => {
         }
         donneesMAJ.disponible = disponible;
       }
+    } else {
+      // Pour les autres rôles, ignorer le champ disponible
+      if (disponible !== undefined) {
+        console.log('Tentative de modification disponibilité par non-livreur:', utilisateur.role);
+        return res.status(400).json({
+          message: 'Seuls les livreurs peuvent modifier leur disponibilité.'
+        });
+      }
     }
 
+    console.log('Données à mettre à jour:', donneesMAJ);
     await utilisateur.update(donneesMAJ);
 
-    res.json({ message: 'Profil mis à jour avec succès.' });
+    // Renvoyer l'utilisateur mis à jour
+    const utilisateurMAJ = await Utilisateur.findByPk(req.utilisateur.id, {
+      attributes: { exclude: ['motDePasse'] },
+      include: [
+        {
+          model: Restaurant,
+          as: 'restaurant',
+          required: false
+        }
+      ]
+    });
+
+    res.json({ 
+      message: 'Profil mis à jour avec succès.',
+      utilisateur: utilisateurMAJ
+    });
   } catch (error) {
+    console.error('Erreur modification profil:', error);
     res.status(500).json({ message: 'Erreur lors de la mise à jour.' });
   }
 };
