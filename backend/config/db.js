@@ -12,10 +12,10 @@ const sequelize = new Sequelize(
     dialect: 'postgres',
     logging: false, // mettre true pour voir les requêtes SQL en développement
     dialectOptions: {
-      ssl: {
+      ssl: process.env.NODE_ENV === 'production' ? {
         require: true,
         rejectUnauthorized: false
-      }
+      } : false
     },
     pool: {
       max: 10,      // maximum 10 connexions simultanées

@@ -449,7 +449,7 @@ const Mission = () => {
             background: '#EAF5EF', border: '1px solid #8ECBA8',
             borderRadius: 20, padding: '40px 24px', textAlign: 'center',
           }}>
-            <div style={{ fontSize: 52, marginBottom: 16 }}>🎉</div>
+            <div style={{ fontSize: 52, marginBottom: 16 }}></div>
             <div style={{
               fontFamily: 'Outfit, sans-serif',
               fontSize: 22, fontWeight: 700, color: '#1D5C3A', marginBottom: 8,

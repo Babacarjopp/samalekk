@@ -31,6 +31,11 @@ const configureSocket = (io) => {
   io.on('connection', (socket) => {
     console.log(`🔌 ${socket.utilisateur.role} connecté : ${socket.utilisateur.nom}`);
 
+    // Rejoindre automatiquement la salle personnelle pour recevoir les notifications
+    const sallePersonnelle = `user:${socket.utilisateur.id}`;
+    socket.join(sallePersonnelle);
+    console.log(`👤 Utilisateur ${socket.utilisateur.id} rejoint la salle ${sallePersonnelle}`);
+
     socket.on('livreur:connecte', (livreurId) => {
       if (socket.utilisateur.role !== 'livreur' || socket.utilisateur.id !== livreurId) {
         socket.emit('erreur', { message: 'Identité livreur invalide.' });

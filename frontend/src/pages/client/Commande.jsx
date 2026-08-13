@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { commandeService } from '../../services/commandeService';
 import { formatPrix } from '../../utils/formatPrix';
 import Button from '../../components/common/Button';
+import SelecteurAdresse from '../../components/common/SelecteurAdresse';
 
 const FRAIS_LIVRAISON = 500;
 
@@ -21,29 +22,24 @@ const Commande = () => {
   const [adresse,      setAdresse]      = useState('');
   const [modePaiement, setModePaiement] = useState('a_la_livraison');
   const [position,     setPosition]     = useState(null);
+  const [adresseComplete, setAdresseComplete] = useState(null);
   const [chargement,   setChargement]   = useState(false);
   const [erreur,       setErreur]       = useState('');
   const [success,      setSuccess]      = useState(false);
 
   const total = sousTotal + FRAIS_LIVRAISON;
 
-  // Géolocaliser le client automatiquement (include obligatoire)
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setPosition({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude
-          });
-        },
-        () => {
-          // GPS refusé → on continue sans coordonnées
-          console.warn('GPS refusé par l\'utilisateur');
-        }
-      );
+  // Gérer le changement d'adresse avec le sélecteur
+  const handleAdresseChange = (adresseData) => {
+    setAdresse(adresseData.adresse);
+    setAdresseComplete(adresseData);
+    if (adresseData.latitude && adresseData.longitude) {
+      setPosition({
+        lat: adresseData.latitude,
+        lng: adresseData.longitude
+      });
     }
-  }, []);
+  };
 
   // Rediriger si panier vide
   useEffect(() => {
@@ -64,9 +60,9 @@ const Commande = () => {
       const donnees = {
         restaurantId,
         plats: articles.map(a => ({ platId: a.id, quantite: a.quantite })),
-        adresseLivraison:   adresse,
-        latitudeLivraison:  position?.lat  || null,
-        longitudeLivraison: position?.lng  || null,
+        adresseLivraison:   adresseComplete?.adresse || adresse,
+        latitudeLivraison:  adresseComplete?.latitude || position?.lat || null,
+        longitudeLivraison: adresseComplete?.longitude || position?.lng || null,
         modePaiement
       };
 
@@ -127,21 +123,14 @@ const Commande = () => {
               Adresse de livraison
             </h2>
 
-            {position && (
-              <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4
-                              text-sm text-green-700 flex items-center gap-2">
-                <i className="ti ti-map-pin" /> Position GPS détectée — livraison optimisée
-              </div>
-            )}
-
-            <textarea
-              value={adresse}
-              onChange={(e) => setAdresse(e.target.value)}
-              placeholder="Ex : Quartier Darou Khoudoss, près de la grande mosquée, Touba"
-              rows={3}
-              className="champ resize-none"
-              required
+            <SelecteurAdresse 
+              onAdresseChange={handleAdresseChange}
+              adresseInitiale={adresse}
             />
+
+            <p className="text-gray-400 text-xs mt-3">
+              💡 Utilisez le GPS pour une précision optimale ou recherchez votre adresse manuellement
+            </p>
           </div>
 
           {/* Mode de paiement */}

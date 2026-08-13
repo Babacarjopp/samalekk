@@ -14,9 +14,10 @@ const useGeolocation = (surveiller = false) => {
     }
 
     const options = {
-      enableHighAccuracy: true,
-      timeout:            10000,
-      maximumAge:         5000
+      enableHighAccuracy: true,  // Utiliser GPS si disponible
+      timeout:            15000, // Augmenter le timeout pour meilleur signal
+      maximumAge:         0,     // Toujours obtenir la position la plus récente
+      desiredAccuracy:    'high' // Pour les navigateurs qui supportent cette option
     };
 
     const succes = (pos) => {
