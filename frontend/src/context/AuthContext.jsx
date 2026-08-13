@@ -9,11 +9,17 @@ export const AuthProvider = ({ children }) => {
 
   const synchroniserUtilisateur = (user) => {
     if (user) {
-      localStorage.setItem('utilisateur', JSON.stringify(user));
+      // S'assurer que disponible est défini
+      const userWithDispo = {
+        ...user,
+        disponible: user.disponible !== undefined ? user.disponible : false
+      };
+      localStorage.setItem('utilisateur', JSON.stringify(userWithDispo));
+      setUtilisateur(userWithDispo);
     } else {
       localStorage.removeItem('utilisateur');
+      setUtilisateur(null);
     }
-    setUtilisateur(user);
   };
 
   useEffect(() => {
@@ -42,8 +48,13 @@ export const AuthProvider = ({ children }) => {
     const res = await authService.seConnecter({ email, motDePasse });
     const { token, utilisateur: user } = res.data;
     localStorage.setItem('token', token);
-    synchroniserUtilisateur(user);
-    return user;
+    // S'assurer que disponible est défini
+    const userWithDispo = {
+      ...user,
+      disponible: user.disponible !== undefined ? user.disponible : false
+    };
+    synchroniserUtilisateur(userWithDispo);
+    return userWithDispo;
   };
 
   const sInscrire = async (donnees) => {
@@ -77,7 +88,9 @@ export const AuthProvider = ({ children }) => {
     try {
       await authService.modifierProfil({ disponible: nouvelleDispo });
       setUtilisateur(prev => ({ ...prev, disponible: nouvelleDispo }));
-      localStorage.setItem('utilisateur', JSON.stringify({ ...utilisateur, disponible: nouvelleDispo }));
+      // Mettre à jour localStorage avec la nouvelle valeur
+      const currentUser = JSON.parse(localStorage.getItem('utilisateur') || '{}');
+      localStorage.setItem('utilisateur', JSON.stringify({ ...currentUser, disponible: nouvelleDispo }));
     } catch (error) {
       console.error('Erreur mise à jour disponibilité:', error);
       throw error;

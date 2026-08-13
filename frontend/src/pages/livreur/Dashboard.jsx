@@ -33,10 +33,14 @@ const DashboardLivreur = () => {
   };
 
   const toggleDisponibilite = async () => {
+    console.log('Toggle clicked, current disponible:', disponible);
     try {
+      console.log('Setting to:', !disponible);
       await setDisponible(!disponible);
+      console.log('Toggle successful');
     } catch (err) {
-      console.error(err);
+      console.error('Toggle error:', err);
+      alert('Erreur lors du changement de disponibilité');
     }
   };
 
@@ -70,8 +74,10 @@ const DashboardLivreur = () => {
           <div className="flex flex-col items-center gap-2">
             <button
               onClick={toggleDisponibilite}
-              className={`relative w-14 h-7 rounded-full transition-colors duration-300
+              disabled={false}
+              className={`relative w-14 h-7 rounded-full transition-colors duration-300 cursor-pointer
                           ${disponible ? 'bg-green-500' : 'bg-gray-300'}`}
+              style={{ cursor: 'pointer' }}
             >
               <div className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow
                                transition-transform duration-300
