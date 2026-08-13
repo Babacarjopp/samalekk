@@ -4,6 +4,7 @@ import { livraisonService } from '../../services/livraisonService';
 import { useAuth } from '../../context/AuthContext';
 import useSocket from '../../hooks/useSocket';
 import CarteGPS from '../../components/livreur/CarteGPS';
+import BoutonItineraire from '../../components/livreur/BoutonItineraire';
 
 const Mission = () => {
   const { id }          = useParams();
@@ -373,26 +374,18 @@ const Mission = () => {
                 Appeler
               </a>
             )}
-
-            {/* Google Maps client */}
-            {positionClient && (
-              <a
-                href={`https://www.google.com/maps/dir/?api=1&destination=${positionClient.lat},${positionClient.lng}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 7,
-                  padding: '9px 18px',
-                  background: '#EDF2FF', color: '#2F5BE8',
-                  border: '1px solid #C0CCFF', borderRadius: 22,
-                  fontSize: 14, fontWeight: 500, textDecoration: 'none',
-                }}
-              >
-                <i className="ti ti-map-2" style={{ fontSize: 15 }} />
-                Google Maps
-              </a>
-            )}
           </div>
+
+          {/* Bouton itinéraire simplifié */}
+          {positionClient && (
+            <div style={{ marginTop: 16 }}>
+              <BoutonItineraire
+                positionLivreur={posLivreur}
+                positionClient={positionClient}
+                adresseClient={commande?.adresseLivraison}
+              />
+            </div>
+          )}
         </div>
 
         {/* ── Bouton Étape 1 : Confirmer récupération ── */}
