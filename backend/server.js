@@ -26,7 +26,7 @@ const server = http.createServer(app);
 // Configuration Socket.io avec CORS
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: [process.env.CLIENT_URL || 'http://localhost:5173', 'https://touba-food-backend.onrender.com'],
     methods: ['GET', 'POST']
   }
 });

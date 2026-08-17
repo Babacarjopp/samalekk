@@ -111,7 +111,7 @@ export default function Commande() {
   if (success) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FBF7F3' }}>
       <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 72, marginBottom: 20 }}>🎉</div>
+        <div style={{ fontSize: 72, marginBottom: 20 }}></div>
         <h2 style={{ fontFamily: 'Outfit, sans-serif', fontSize: 26, fontWeight: 700, color: '#16120E', marginBottom: 10 }}>
           Commande envoyée !
         </h2>

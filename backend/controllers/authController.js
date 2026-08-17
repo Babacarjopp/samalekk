@@ -168,6 +168,9 @@ const modifierProfil = async (req, res) => {
 
     console.log('Modification profil - Utilisateur:', utilisateur?.role, 'Données reçues:', { nom, telephone, vehicule, disponible });
 
+    
+  
+
     if (!utilisateur) {
       return res.status(404).json({ message: 'Utilisateur introuvable.' });
     }
